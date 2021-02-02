@@ -1,4 +1,0 @@
-Building DAG of jobs...
-MissingInputException in line 106 of /home/centos/ERA5_workflow/Snakefile:
-Missing input files for rule geopotential_to_geopotential_height:
-/opt/uio/flexpart/ERA5/era5.1000hpa.Geopotential.monthly.2017-2019.nc

@@ -1,4 +1,0 @@
-Building DAG of jobs...
-MissingInputException in line 74 of /home/centos/ERA5_workflow/Snakefile:
-Missing input files for rule annual_average:
-/opt/uio/flexpart/era5.single_level.surface_pressure.monthly.2017-2019.nc

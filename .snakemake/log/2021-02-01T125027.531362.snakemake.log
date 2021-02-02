@@ -1,4 +1,0 @@
-Building DAG of jobs...
-MissingInputException in line 11 of /home/centos/ERA5_workflow/Snakefile:
-Missing input files for rule all:
-/opt/uio/flexpart/ERA5/era5.single_level.surface_pressure.DJF.2017-2019.nc
