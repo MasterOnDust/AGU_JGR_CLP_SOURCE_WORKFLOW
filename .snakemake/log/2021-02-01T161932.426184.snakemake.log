@@ -1,0 +1,12 @@
+Building DAG of jobs...
+AmbiguousRuleException:
+Rules geopotential_to_geopotential_height and download_monthly_era5_pressure are ambiguous for the file /opt/uio/flexpart/ERA5/era5.1000hpa.GeopotHeight.monthly.2017-2019.nc.
+Consider starting rule output with a unique prefix, constrain your wildcards, or use the ruleorder directive.
+Wildcards:
+	geopotential_to_geopotential_height: edate=2019,plevel=1000,sdate=2017
+	download_monthly_era5_pressure: edate=2019,plevel=1000,sdate=2017,varName=GeopotHeight
+Expected input files:
+	geopotential_to_geopotential_height: /opt/uio/flexpart/ERA5/era5.1000hpa.Geopotential.monthly.2017-2019.nc
+	download_monthly_era5_pressure: download_era5_monthly.pyExpected output files:
+	geopotential_to_geopotential_height: /opt/uio/flexpart/ERA5/era5.1000hpa.GeopotHeight.monthly.2017-2019.nc
+	download_monthly_era5_pressure: /opt/uio/flexpart/ERA5/era5.1000hpa.GeopotHeight.monthly.2017-2019.nc

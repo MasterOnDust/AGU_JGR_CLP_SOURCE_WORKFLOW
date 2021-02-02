@@ -1,0 +1,22 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 1 (use --cores to define parallelism)
+Rules claiming more threads will be scaled down.
+Job counts:
+	count	jobs
+	1	clean
+	1
+Select jobs to execute...
+
+[Mon Feb  1 13:52:56 2021]
+rule clean:
+    jobid: 0
+
+
+        shopt -s extglob
+        rm -rf !(/opt/uio/flexpart/ERA5/*monthly*.nc)
+        
+[Mon Feb  1 13:52:56 2021]
+Finished job 0.
+1 of 1 steps (100%) done
+Complete log: /home/centos/ERA5_workflow/.snakemake/log/2021-02-01T135256.500450.snakemake.log

@@ -1,0 +1,31 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 1 (use --cores to define parallelism)
+Rules claiming more threads will be scaled down.
+Job counts:
+	count	jobs
+	1	all
+	1	create_anomaly
+	2
+Select jobs to execute...
+
+[Mon Feb  1 11:24:00 2021]
+rule create_anomaly:
+    input: /opt/uio/flexpart/ERA5/era5.single_level.surface_pressure.monthly.2017-2019.nc, /opt/uio/flexpart/ERA5/era5.single_level.surface_pressure.annual_avg.2017-2019.nc
+    output: /opt/uio/flexpart/ERA5/era5.single_level.surface_pressure.anomaly.2017-2019.nc
+    jobid: 4
+    wildcards: level=single_level, varName=surface_pressure, sdate=2017, edate=2019
+
+[Mon Feb  1 11:24:01 2021]
+Error in rule create_anomaly:
+    jobid: 4
+    output: /opt/uio/flexpart/ERA5/era5.single_level.surface_pressure.anomaly.2017-2019.nc
+    shell:
+        
+        ncbo -d time,,11 /opt/uio/flexpart/ERA5/era5.single_level.surface_pressure.monthly.2017-2019.nc /opt/uio/flexpart/ERA5/era5.single_level.surface_pressure.annual_avg.2017-2019.nc /opt/uio/flexpart/ERA5/era5.single_level.surface_pressure.anomaly.2017-2019.nc
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: /home/centos/ERA5_workflow/.snakemake/log/2021-02-01T112400.855504.snakemake.log

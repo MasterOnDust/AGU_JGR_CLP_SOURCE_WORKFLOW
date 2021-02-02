@@ -1,0 +1,3 @@
+NameError in line 93 of /home/centos/ERA5_workflow/Snakefile:
+name 'download_era5_monthly' is not defined
+  File "/home/centos/ERA5_workflow/Snakefile", line 93, in <module>

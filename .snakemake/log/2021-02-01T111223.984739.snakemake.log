@@ -1,0 +1,25 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 2
+Rules claiming more threads will be scaled down.
+Job counts:
+	count	jobs
+	1	all
+	1	create_anomaly
+	2
+Select jobs to execute...
+
+[Mon Feb  1 11:12:24 2021]
+rule create_anomaly:
+    input: /opt/uio/flexpart/ERA5/era5.single_level.surface_pressure.monthly.2017-2019.nc, /opt/uio/flexpart/ERA5/era5.single_level.surface_pressure.annual_avg.2017-2019.nc
+    output: /opt/uio/flexpart/ERA5/era5.single_level.surface_pressure.anomaly.2017-2019.nc
+    jobid: 4
+    wildcards: level=single_level, varName=surface_pressure, sdate=2017, edate=2019
+
+RuleException in line 18 of /home/centos/ERA5_workflow/Snakefile:
+'_IOFile' object has no attribute 'nc'
+  File "/opt/uio/python/miniconda3/envs/ERA5_workflow/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 136, in run_jobs
+  File "/opt/uio/python/miniconda3/envs/ERA5_workflow/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 441, in run
+  File "/opt/uio/python/miniconda3/envs/ERA5_workflow/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 230, in _run
+  File "/opt/uio/python/miniconda3/envs/ERA5_workflow/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 156, in _run
+  File "/opt/uio/python/miniconda3/envs/ERA5_workflow/lib/python3.9/site-packages/snakemake/executors/__init__.py", line 162, in printjob

@@ -1,0 +1,31 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 1 (use --cores to define parallelism)
+Rules claiming more threads will be scaled down.
+Job counts:
+	count	jobs
+	1	all
+	2	download_monthly_era5_pressure
+	1	download_monthly_era5_single_level
+	4
+Select jobs to execute...
+
+[Mon Feb  1 08:31:29 2021]
+Job 1: downloading /opt/uio/flexpart/ERA5/era5.1000hpa.Geopotential.monthly.2018-2019.nc
+
+[Mon Feb  1 08:31:43 2021]
+Error in rule download_monthly_era5_pressure:
+    jobid: 1
+    output: /opt/uio/flexpart/ERA5/era5.1000hpa.Geopotential.monthly.2018-2019.nc
+    shell:
+        
+        [[ -d dir ]] || mkdir dir /opt/uio/flexpart/ERA5/era5.1000hpa.Geopotential.monthly.2018-2019.nc
+        python download_era5_monthly.py 1000 Geopotential 2018 2019 --fn /opt/uio/flexpart/ERA5/era5.1000hpa.Geopotential.monthly.2018-2019.nc
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+Removing output files of failed job download_monthly_era5_pressure since they might be corrupted:
+/opt/uio/flexpart/ERA5/era5.1000hpa.Geopotential.monthly.2018-2019.nc
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: /home/centos/ERA5_workflow/.snakemake/log/2021-02-01T083129.517266.snakemake.log

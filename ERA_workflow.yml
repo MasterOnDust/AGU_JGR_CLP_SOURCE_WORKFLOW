@@ -1,0 +1,13 @@
+name: ERA5_workflow
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python-eccodes
+  - ipython
+  - cdsapi
+  - genshi
+  - ecmwf-api-client
+  - vim
+  - snakemake

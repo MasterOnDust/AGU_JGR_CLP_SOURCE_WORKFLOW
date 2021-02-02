@@ -1,0 +1,41 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 2
+Rules claiming more threads will be scaled down.
+Job counts:
+	count	jobs
+	1	all
+	1	annual_average
+	1	download_monthly_era5_single_level
+	3
+Select jobs to execute...
+
+[Mon Feb  1 11:42:48 2021]
+Job 3: downloading /opt/uio/flexpart/ERA5/era5.single_level.surface_pressure.monthly.2017-2019.nc
+
+[Mon Feb  1 11:42:51 2021]
+Finished job 3.
+1 of 3 steps (33%) done
+Select jobs to execute...
+
+[Mon Feb  1 11:42:51 2021]
+rule annual_average:
+    input: /opt/uio/flexpart/ERA5/era5.single_level.surface_pressure.monthly.2017-2019.nc
+    output: /opt/uio/flexpart/ERA5/era5.single_level.surface_pressure.annual.2017-2019.nc
+    jobid: 4
+    wildcards: level=single_level, varName=surface_pressure, sdate=2017, edate=2019
+
+[Mon Feb  1 11:42:51 2021]
+Finished job 4.
+2 of 3 steps (67%) done
+Select jobs to execute...
+
+[Mon Feb  1 11:42:51 2021]
+localrule all:
+    input: /opt/uio/flexpart/ERA5/era5.1000hpa.Geopotential.monthly.2017-2019.nc, /opt/uio/flexpart/ERA5/era5.850hpa.Geopotential.monthly.2017-2019.nc, /opt/uio/flexpart/ERA5/era5.single_level.surface_pressure.monthly.2017-2019.nc, /opt/uio/flexpart/ERA5/era5.single_level.surface_pressure.annual.2017-2019.nc
+    jobid: 0
+
+[Mon Feb  1 11:42:51 2021]
+Finished job 0.
+3 of 3 steps (100%) done
+Complete log: /home/centos/ERA5_workflow/.snakemake/log/2021-02-01T114248.173358.snakemake.log

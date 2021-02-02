@@ -1,0 +1,21 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 1 (use --cores to define parallelism)
+Rules claiming more threads will be scaled down.
+Job counts:
+	count	jobs
+	1	winter_seasonal_average
+	1
+Select jobs to execute...
+
+[Mon Feb  1 13:29:14 2021]
+rule winter_seasonal_average:
+    input: /opt/uio/flexpart/ERA5/era5.single_level.surface_pressure.monthly.2017-2019.nc
+    output: /opt/uio/flexpart/ERA5/era5.single_level.surface_pressure.DJF.2017-2019.nc
+    jobid: 0
+    wildcards: level=single_level, varName=surface_pressure, season=DJF, sdate=2017, edate=2019
+
+[Mon Feb  1 13:29:14 2021]
+Finished job 0.
+1 of 1 steps (100%) done
+Complete log: /home/centos/ERA5_workflow/.snakemake/log/2021-02-01T132914.056712.snakemake.log

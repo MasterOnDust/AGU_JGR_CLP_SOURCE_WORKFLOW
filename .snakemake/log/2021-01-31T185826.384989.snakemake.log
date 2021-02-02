@@ -1,0 +1,2 @@
+SyntaxError in line 11 of /home/centos/ERA5_workflow/Snakefile:
+Unexpected keyword temporalres in rule definition (Snakefile, line 11)
