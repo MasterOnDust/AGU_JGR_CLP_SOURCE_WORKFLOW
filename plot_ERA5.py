@@ -1,11 +1,15 @@
 import argparse as ap
 
+
+import numpy as np
 import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
 import xarray as xr
 from cartopy.mpl.gridliner import (LATITUDE_FORMATTER, LONGITUDE_FORMATTER,
                                    Gridliner)
+from IPython import embed
 def read_data(path, var=None):
+
     dset = xr.open_dataset(path)
     dset = fix_longitude(dset)
     datavar=list(dset.keys())
@@ -18,7 +22,6 @@ def read_data(path, var=None):
         datavar=''.join(datavar)
     dset.attrs['varName']=datavar
     return dset
-
 
 def fix_longitude(dset):
     """
@@ -45,21 +48,29 @@ def draw_map(ax=None, top_labels=False, right_labels=False):
     ax.coastlines('110m', color='gray', alpha=0.8)
     return ax 
 
-def plot_contour(da,ax=None, colors='black'):
+def plot_contour(da,ax=None, colors='black', levels=None, **kwargs):
     if ax == None:
         ax = plt.gca()
     da = da.isel(time=0)
-    CS = ax.contour(da['longitude'],da['latitude'],da,transform=ccrs.PlateCarree(), colors=colors)
-    ax.clabel(CS, CS.levels, inline=True, fmt='%d')
-    return ax
 
-def plot_contourf(da, ax=None, cmap='viridis'):
+    
+    if type(levels) is np.ndarray:
+        levels=levels
+        im = ax.contour(da['longitude'],da['latitude'],da,transform=ccrs.PlateCarree()
+                    ,levels=levels, colors=colors)
+    else:
+        im = ax.contour(da['longitude'],da['latitude'],da,transform=ccrs.PlateCarree(), colors=colors)
+        levels=im.levels
+    ax.clabel(im, levels, inline=True, fmt='%d')
+    return im
+
+def plot_contourf(da, ax=None, cmap='viridis',**kwargs):
     if ax == None:
         ax = plt.gca()
     da=da.isel(time=0)
-    ax.contourf(da['longitude'],da['latitude'],da ,transform=ccrs.PlateCarree(), cmap=cmap)
+    im =ax.contourf(da['longitude'],da['latitude'],da ,transform=ccrs.PlateCarree(), cmap=cmap,**kwargs)
 
-    return ax 
+    return im 
 
 def plot_pcolormesh(da, ax=None, cmap='viridis'):
     """
@@ -73,40 +84,41 @@ def plot_pcolormesh(da, ax=None, cmap='viridis'):
     da.plot.pcolormesh(ax=ax,transform=ccrs.PlateCarree(), cmap=cmap)
 
     return ax
- 
 
-if __name__=='__main__':
-    parser=ap.ArgumentParser(description='Command line interface for plotting ERA5 data')
-    parser.add_argument('path', help='path to ERA5 dataset')
-    parser.add_argument('--method', '--m', default='pcolormesh', help='which ploting function to use')
-    parser.add_argument('--title', '--t', default=None, help='title of plot')
-    parser.add_argument('--filename', '--fn', default=None, help='Filename to which plot should be stored')
-    parser.add_argument('--variable', '--v', default=None, 
-            help='If there are more than one variable in the dataset variable name has to be specified')
-    args = parser.parse_args()
-    path=args.path
-    title=args.title
-    file_name=args.filename
-    var=args.variable
-    method=args.method
-    dset=read_data(path,var)
-    da=dset[dset.varName]
-    fig,ax =plt.subplots(subplot_kw={'projection':ccrs.Robinson(central_longitude=90.0)})
-    print(method)
-    ax = draw_map(ax)
-    if method=='pcolormesh':
-        ax=plot_pcolormesh(da,ax=ax)
-    elif method=='contour':
-        ax=plot_contour(da, ax=ax)
-    elif method=='contourf':
-        ax=plot_contourf(da,ax=ax)
-    else:
-        raise(ValueError('{} is not a valid plotting method choose either pcolormesh, contour, contourf'.format(method)))
-    
-    plt.show()
-    if file_name.endswith('.pdf'):
-        plt.savefig(file_name, bbox_inches='tight')
-    elif file_name.endswith('png'):
-        plt.savefig(file_name, dpi=300,bbox_inches='tight')
-    else: 
-        raise(ValueError("invalid file format {}".format(file_name)))
+
+
+def plot_geopot_temperature(ax,temp_winter, temp_summer,geopot_winter,geopot_summer, extent=None):
+
+    ds_temp_winter=read_data(temp_winter)
+    ds_temp_summer=read_data(temp_summer)
+    ds_geopot_winter=read_data(geopot_winter) 
+    ds_geopot_summer=read_data(geopot_summer)
+    da_temp_winter = ds_temp_winter[ds_temp_winter.varName]
+    da_temp_summer = ds_temp_summer[ds_temp_summer.varName]
+    da_geopot_winter=ds_geopot_winter[ds_geopot_winter.varName]
+    da_geopot_summer=ds_geopot_summer[ds_geopot_summer.varName]
+    min_gepot=np.ceil(da_geopot_winter.min()/10)*10
+    max_gepot=np.ceil(da_geopot_summer.max()/10)*10
+    levels= np.arange(min_gepot,max_gepot,np.round((max_gepot-min_gepot)/5))
+
+    vmin=np.floor(da_temp_winter.min()/10)*10
+    vmax=np.floor(da_temp_summer.max()/10)*10
+    ax[0]=draw_map(ax[0])
+    ax[1]=draw_map(ax[1])
+    if extent:
+        for axes in ax:
+            axes.set_extent(extent)
+            axes.set_aspect('auto')
+    ax[0].text(0.05,0.88,'a)',transform=ax[0].transAxes, fontsize=14)
+    ax[1].text(0.05,0.88,'b)',transform=ax[1].transAxes, fontsize=14)
+
+    ax[0].text(0.9,0.88,'JJA',transform=ax[0].transAxes, fontsize=14, color='white')
+    ax[1].text(0.9,0.88,'DJF',transform=ax[1].transAxes, fontsize=14, color='white')
+
+    plot_contourf(da_temp_winter,ax[1],vmax=vmax,vmin=vmin, extend='both')
+    plot_contour(da_geopot_winter,ax[1],levels=levels)
+    plot_contour(da_geopot_summer,ax[0],levels=levels)
+    im=plot_contourf(da_temp_summer,ax[0],vmin=vmin,vmax=vmax, extend='both')
+
+    return ax, im
+
