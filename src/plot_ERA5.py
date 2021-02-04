@@ -8,34 +8,9 @@ import xarray as xr
 from cartopy.mpl.gridliner import (LATITUDE_FORMATTER, LONGITUDE_FORMATTER,
                                    Gridliner)
 from IPython import embed
-def read_data(path, var=None):
+from .process_era5 import read_data
 
-    dset = xr.open_dataset(path)
-    dset = fix_longitude(dset)
-    datavar=list(dset.keys())
 
-    if len(datavar) > 1 and var==None:
-        raise(IndexError('netCDF file contains more than one variable and varialbe was not provided'))
-    elif var!=None:
-        datavar=var
-    else:
-        datavar=''.join(datavar)
-    dset.attrs['varName']=datavar
-    return dset
-
-def fix_longitude(dset):
-    """
-    DESCRIPTION:
-    ============
-        Center longitude around 180 degree in stead of 0
-
-    """
-
-    lon_attrs=dset.longitude.attrs
-    dset = dset.assign_coords(longitude=(((dset.longitude + 180) % 360) - 180))
-    dset=dset.sortby('longitude')
-    dset.longitude.attrs=lon_attrs
-    return dset
 
 def draw_map(ax=None, top_labels=False, right_labels=False):
     if ax==None:
