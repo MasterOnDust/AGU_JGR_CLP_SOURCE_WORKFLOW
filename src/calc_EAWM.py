@@ -1,5 +1,5 @@
 import xarray as xr
-from process_era5 import read_data
+from .process_era5 import read_data
 
 def calc_EAWM_zonal_300hPa(zonal_300hPa_path, frequency):
     ds =read_data(zonal_300hPa_path)

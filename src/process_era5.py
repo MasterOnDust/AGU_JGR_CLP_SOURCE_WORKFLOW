@@ -35,3 +35,20 @@ def calculate_monthly_clm(path):
     ds=ds.groupby('time.month').mean(keep_attrs=True)
     ds.attrs['history']=time.ctime() +' xarray.Dataset.groupby(\'time.month\').mean(keep_attrs=True) ' + ds.attrs['history']
     return ds
+
+def resample_seasonal(path,season):
+    ds=read_data(path)
+    if season=='DJF':
+        ds=ds.resample(time='Q-NOV').mean(keep_attrs=True)
+        ds=ds.sel(time=(ds.time.dt.season=='DJF'))
+    elif season=='MAM':
+        ds=ds.resample(time='Q-NOV').mean(keep_attrs=True)
+        ds=ds.sel(time=(ds.time.dt.season=='MAM'))
+    elif season=='JJA':
+        ds=ds.resample(time='Q-NOV').mean(keep_attrs=True)
+        ds=ds.sel(time=(ds.time.dt.season=='JJA'))
+    elif season=='SON':
+        ds=ds.resample(time='Q-NOV').mean(keep_attrs=True)
+        ds=ds.sel(time=(ds.time.dt.season=='SON'))
+    return ds
+    

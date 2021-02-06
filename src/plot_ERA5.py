@@ -9,8 +9,17 @@ from cartopy.mpl.gridliner import (LATITUDE_FORMATTER, LONGITUDE_FORMATTER,
                                    Gridliner)
 from IPython import embed
 from .process_era5 import read_data
+import matplotlib as mpl
 
+def draw_map_orogaphic_east_asia(ax):
+    ylocator = mpl.ticker.FixedLocator([-20,0,20,40,60,80])
+    xlocator = mpl.ticker.FixedLocator([-150,-130,-100,-70,-40,-10,20,50,80,110,140,170])
+    # yformatter=mpl.ticker.FixedFormatter([(80,-20),(80,0),(80,20),(80,40),(80,60),(80,80)])
 
+    ax.coastlines('110m')
+    gl=ax.gridlines(transform = ccrs.PlateCarree(), linestyle ='--', draw_labels=False,ylocs=ylocator,linewidth=2,
+                            xlocs=xlocator)
+    return ax
 
 def draw_map(ax=None, top_labels=False, right_labels=False):
     if ax==None:
@@ -26,15 +35,14 @@ def draw_map(ax=None, top_labels=False, right_labels=False):
 def plot_contour(da,ax=None, colors='black', levels=None, **kwargs):
     if ax == None:
         ax = plt.gca()
-    da = da.isel(time=0)
 
     
     if type(levels) is np.ndarray:
         levels=levels
         im = ax.contour(da['longitude'],da['latitude'],da,transform=ccrs.PlateCarree()
-                    ,levels=levels, colors=colors)
+                    ,levels=levels, colors=colors,zorder=1000)
     else:
-        im = ax.contour(da['longitude'],da['latitude'],da,transform=ccrs.PlateCarree(), colors=colors)
+        im = ax.contour(da['longitude'],da['latitude'],da,transform=ccrs.PlateCarree(), colors=colors, zorder=1000)
         levels=im.levels
     ax.clabel(im, levels, inline=True, fmt='%d')
     return im
@@ -42,7 +50,6 @@ def plot_contour(da,ax=None, colors='black', levels=None, **kwargs):
 def plot_contourf(da, ax=None, cmap='viridis',**kwargs):
     if ax == None:
         ax = plt.gca()
-    da=da.isel(time=0)
     im =ax.contourf(da['longitude'],da['latitude'],da ,transform=ccrs.PlateCarree(), cmap=cmap,**kwargs)
 
     return im 
