@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import xarray as xr
 from .process_era5 import read_data
 

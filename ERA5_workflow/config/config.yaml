@@ -1,0 +1,32 @@
+# This file configures the workflow on a global scale.
+# Setting the global path variables etss
+
+# Setting different global paths where the result should be stored
+download_path: "/opt/uio/flexpart/ERA5/monthly"
+figs_path: "results/figs"
+intermediate_files: "/opt/uio/flepxart/ERA5/intermediate_results"
+
+# Variables to download
+
+variables_single_level:
+  - 2m_temperature
+  - mean_sea_level_pressure
+  - snow_depth
+
+# For pressure_levels the levels needs to specified aswell
+
+variables_pressure_levels:
+  temperature:
+    - 850
+    - 500
+    - 250
+  Geopotential:
+    - 850
+    - 500
+    - 250
+  u_component_of_wind:
+    - 300
+
+# Set first and last year to download.
+sdate: 1979
+edate: 2019
