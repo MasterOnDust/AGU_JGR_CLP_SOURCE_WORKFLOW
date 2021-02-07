@@ -4,12 +4,14 @@ rule setup_folder_structure:
     output:
         data_folder=config['intermediate_files'],
         figs=config['figs_path'],
-        monthly_data=config['download_path']
+        monthly_data=config['download_path'],
+        nao=config['nao_output_path']
     shell:
         """
         [[ -d {output.data_folder} ]] || mkdir {output.data_folder}
         [[ -d {output.monthly_data} ]] || mkdir {output.monthly_data}
         [[ -d {output.figs} ]] || mkdir {output.figs}
+        [[ -d {output.nao} ]] || mkdir {output.nao}
         """
 rule geopotential_to_geopotential_height:
     input: DOWNLOADS + "era5.{plevel}hPa.Geopotential.monthly.{sdate}-{edate}.nc"

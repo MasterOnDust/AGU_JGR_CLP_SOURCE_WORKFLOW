@@ -10,12 +10,13 @@ from scripts.calc_NAO import calc_NAO_EOF, calc_NAO_station
 
 DOWNLOADS=config["download_path"]
 DATA_FOLDER=config["intermediate_files"]
+NAO=config['nao_output_path']
 rule eof_based_NAO:
     input:
-        src='src/calc_NAO.py',
+        src='workflow/scripts/calc_NAO.py',
         mslp_data=DOWNLOADS+"/era5.single_level.mean_sea_level_pressure.monthly.{sdate}-{edate}.nc"
     output:
-        outpath=DATA_FOLDER+"/era5.single_level.NAO_EOF.{frequency}.{sdate}-{edate}.nc"
+        outpath=NAO+"/era5.single_level.NAO_EOF.{frequency}.{sdate}-{edate}.nc"
     wildcard_constraints:
         frequency='monthly|DJF|MAM|JJA|SON'
     run:
@@ -24,10 +25,10 @@ rule eof_based_NAO:
         
 rule calculate_NAO_station:
     input:
-        src='src/calc_NAO.py',
+        src='workflow/scripts/calc_NAO.py',
         mslp_data_anomaly=DATA_FOLDER+"/era5.single_level.mean_sea_level_pressure.{frequency}_anomaly.{sdate}-{edate}.nc"
     output:
-        outpath=DATA_FOLDER+"/era5.single_level.NAO.station.{frequency}.{sdate}-{edate}.nc"
+        outpath=NAO+"/era5.single_level.NAO_station.{frequency}.{sdate}-{edate}.nc"
     wildcard_constraints:
         frequency='monthly|DJF|MAM|JJA|SON'
     run:

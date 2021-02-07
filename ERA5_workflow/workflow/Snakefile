@@ -58,12 +58,10 @@ rule all:
         expand(config['figs_path']+"/era5.single_level.temp2m_mslp.DJF_JJA_comp_avg.{sdate}-{edate}.png",
                         sdate=SDATE, edate=EDATE),
 
-        config['intermediate_files']+"/era5.single_level.mean_sea_level_pressure.monthly_anomaly.1979-2019.nc",
-        config['intermediate_files']+"/era5.single_level.mean_sea_level_pressure.DJF_anomaly.1979-2019.nc",
-       
-        # config['intermediate_files']+"era5.single_level.mean_sea_level_pressure.DJF.1979-2019.nc",
-        config['intermediate_files']+"/era5.single_level.NAO.station.DJF.1979-2019.nc"
-        # FIGS+"era5.single_level.mslp.DJF_orographic_avg.1979-2019.png"
+
+        config['nao_output_path']+"/era5.single_level.NAO_station.DJF.1979-2019.nc",
+        config['nao_output_path']+"/era5.single_level.NAO_EOF.DJF.{}-{}.nc".format(SDATE,EDATE)
+        # FIGS+"era5.single_level.mslp.DJF_orographic_avg.1979-2019.p_ng"
         # config['intermediate_files']+"/era5.single_level.NAO.monthly.1979-2019.nc"
 
 

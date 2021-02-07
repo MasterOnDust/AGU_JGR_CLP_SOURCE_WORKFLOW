@@ -56,10 +56,11 @@ def calc_NAO_EOF(monthly_mslp_path, freqency):
     eof1_corr = solver.eofsAsCorrelation(neofs=1)
     eof1_cov = solver.eofsAsCovariance(neofs=1)
     out_data=solver.pcs(1,1).copy()
-
+    out_data=out_data.to_dataset(name='NAO_EOF')
+    out_data['NAO_EOF'].attrs['long_name']='north atlantic oscillation index eof'
     out_data['eof1_corr']=eof1_corr
     out_data['eof1_cov']=eof1_cov
-
+    out_data['reference'] = "https://ajdawson.github.io/eofs/latest/examples/nao_xarray.html"
     return out_data
 
 
