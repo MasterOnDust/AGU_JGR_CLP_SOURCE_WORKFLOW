@@ -14,9 +14,9 @@ rule setup_folder_structure:
         [[ -d {output.nao} ]] || mkdir {output.nao}
         """
 rule geopotential_to_geopotential_height:
-    input: DOWNLOADS + "era5.{plevel}hPa.Geopotential.monthly.{sdate}-{edate}.nc"
-    output: DOWNLOADS + "era5.{plevel}hPa.GeopotHeight.monthly.{sdate}-{edate}.nc"
-    params: g=g0
+    input: config["download_path"]+ "/era5.{plevel}hPa.Geopotential.monthly.{sdate}-{edate}.nc"
+    output: config["download_path"] + "/era5.{plevel}hPa.GeopotHeight.monthly.{sdate}-{edate}.nc"
+    params: g=9.80665 #m/s
     shell:
         """
         ncap2 -v -s'z=z/{params.g}f*0.1f;' {input} {output} 

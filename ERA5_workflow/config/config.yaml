@@ -6,6 +6,7 @@ download_path: "/opt/uio/flexpart/ERA5/monthly"
 figs_path: "results/figs"
 intermediate_files: "/opt/uio/flexpart/ERA5/intermediate_results"
 nao_output_path: "results/nao"
+EAWMI_path: "results/eawmi"
 
 # Variables to download
 

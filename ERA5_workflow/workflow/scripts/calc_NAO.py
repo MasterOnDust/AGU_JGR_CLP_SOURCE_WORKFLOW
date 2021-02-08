@@ -1,47 +1,45 @@
 #!/usr/bin/env python
 
 import numpy as np
-import xarray as xr
-
 from eofs.xarray import Eof
-from .process_era5 import read_data
 
 def calc_NAO_station(mslp_anomalies):
+    """
+    DESCRIPTION
+    ===========
+        Calculates the Station based NAO index, which is defined as the 
+        normalized difference in sea level pressure between Reykjavik and 
+        Lisbon.
+
+        Input:
+            mslp_anaomalies: xarray.dataset containing mean sea level pressure anomailies. 
+
+        Returns:
+            NAO station index : norm(Lisbon mean sea level pressure anomalies) - 
+                                norm(Reykjavik mean sea level pressure anomalies) 
+
+
+    """
+
     ds_reykjavik=mslp_anomalies.sel(longitude=-21.93, latitude=64.13, method="nearest")
     ds_Lisbon=mslp_anomalies.sel(longitude=-9.14, latitude=37.71, method="nearest")
     Lisbon_NAO=ds_Lisbon.groupby('time.month')/ds_Lisbon.groupby('time.month').std()
     reykjavik_NAO=ds_reykjavik.groupby('time.month')/ds_reykjavik.groupby('time.month').std()
     return Lisbon_NAO-reykjavik_NAO
 
-def calc_NAO_EOF(monthly_mslp_path, freqency):
+def calc_NAO_EOF(mslp_data_ano):
     """
     DESCRIPTION
     ===========
-        Calculates the EOF based NAO using the EOFS python package. Returning 
-        the scaled 1th principal component 
+        Calculates the EOF based NAO using the EOFS python package.
+        Input takes mean sea level pressure anomalies.
+        
+        Input:
+            mslp_anaomalies: xarray.dataset containing mean sea level pressure anomailies. 
+
+        Returns: 
+            out_data: the scaled 1th principal component time series 
     """
-    monthly_mslp=read_data(monthly_mslp_path)
-    if freqency=='monthly':
-        mlsp_data=monthly_mslp
-    elif freqency =='DJF':
-        mlsp_data=monthly_mslp.resample(time='Q-NOV').mean(keep_attrs=True)
-        mlsp_data=mlsp_data.sel(time=(mlsp_data.time.dt.season=='DJF'))
-    elif freqency=='MAM':
-        # 'Q-NOV' year ends in november 
-        mlsp_data=monthly_mslp.resample(time='Q-NOV').mean(keep_attrs=True)
-        mlsp_data=mlsp_data.sel(time=(mlsp_data.time.dt.season=='MAM'))
-    elif freqency=='JJA':
-        # 'Q-NOV' year ends in november 
-        mlsp_data=monthly_mslp.resample(time='Q-NOV').mean(keep_attrs=True)
-        mlsp_data=mlsp_data.sel(time=(mlsp_data.time.dt.season=='JJA'))
-    elif freqency=='SON':
-        # 'Q-NOV' year ends in november 
-        mlsp_data=monthly_mslp.resample(time='Q-NOV').mean(keep_attrs=True)
-        mlsp_data=mlsp_data.sel(time=(mlsp_data.time.dt.season=='JJA'))
-    else:
-        raise(ValueError("Invalid sampling freqency {}".format(freqency)))
-    
-    mslp_data_ano= mlsp_data['msl']-mlsp_data['msl'].mean(dim='time')
 
     bolean=((mslp_data_ano.longitude >= -90) & (mslp_data_ano.longitude <= 40) & 
                 (mslp_data_ano.latitude <= 80) & (mslp_data_ano.latitude >= 20))
@@ -57,10 +55,10 @@ def calc_NAO_EOF(monthly_mslp_path, freqency):
     eof1_cov = solver.eofsAsCovariance(neofs=1)
     out_data=solver.pcs(1,1).copy()
     out_data=out_data.to_dataset(name='NAO_EOF')
-    out_data['NAO_EOF'].attrs['long_name']='north atlantic oscillation index eof'
+    out_data['NAO_EOF'].attrs['standard_name']='EOF_North_atlantic_oscillation_index'
+    out_data['NAO_EOF'].attrs['long_name']='Normalized 1th principal component of MSLP'
     out_data['eof1_corr']=eof1_corr
     out_data['eof1_cov']=eof1_cov
-    out_data['reference'] = "https://ajdawson.github.io/eofs/latest/examples/nao_xarray.html"
     return out_data
 
 

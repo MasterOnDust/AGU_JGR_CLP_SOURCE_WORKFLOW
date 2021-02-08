@@ -3,27 +3,8 @@
 import xarray as xr
 from .process_era5 import read_data
 
-def calc_EAWM_zonal_300hPa(zonal_300hPa_path, frequency):
-    ds =read_data(zonal_300hPa_path)
-    if frequency=='monthly':
-        u_300=ds
-    elif frequency =='DJF':
-        u_300=ds.resample(time='Q-NOV').mean(keep_attrs=True)
-        u_300=u_300.sel(time=(u_300.time.dt.season=='DJF'))
-    elif frequency=='MAM':
-        # 'Q-NOV' year ends in november 
-        u_300=ds.resample(time='Q-NOV').mean(keep_attrs=True)
-        u_300=u_300.sel(time=(u_300.time.dt.season=='MAM'))
-    elif frequency=='JJA':
-        # 'Q-NOV' year ends in november 
-        u_300=ds.resample(time='Q-NOV').mean(keep_attrs=True)
-        u_300=u_300.sel(time=(u_300.time.dt.season=='JJA'))
-    elif frequency=='SON':
-        # 'Q-NOV' year ends in november 
-        u_300=ds.resample(time='Q-NOV').mean(keep_attrs=True)
-        u_300=u_300.sel(time=(u_300.time.dt.season=='JJA'))
-    else:
-        raise(ValueError("Invalid sampling freqency {}".format(frequency)))
+def calc_EAWM_zonal_300hPa(u_300):
+
 
     siberian_high_domain=((u_300.longitude >= 80) & (u_300.longitude <= 140) & 
                 (u_300.latitude <= 60) & (u_300.latitude >= 50))
@@ -39,7 +20,15 @@ def calc_EAWM_zonal_300hPa(zonal_300hPa_path, frequency):
     eawmi.attrs['doi'] = "https://doi.org/10.1175/1520-0442(2004)017%3C0711:ANEAWM%3E2.0.CO;2"
     return eawmi
 
-
-
+def calc_MO_index(mslp_data):
+    mslp_Nemuro=mslp_data.msl.sel(longitude=145,latitude=43.75)
+    mslp_Irkutsk=mslp_data.msl.sel(longitude=105,latitude=52.5) 
+    standardized_mo =(((mslp_Irkutsk-mslp_Irkutsk.mean(dim='time'))/mslp_Irkutsk.std()) - 
+                    ((mslp_Nemuro-mslp_Nemuro.mean(dim='time'))/mslp_Nemuro.std()))
+    mo = standardized_mo.to_dataset(name='MO')
+    mo.MO.attrs['long_name']='Standardized MO index'
+    mo.attrs['reference'] = "https://doi.org/10.1029/2008JD010824"
+    mo.attrs['title'] = 'Standardized MO index, based the difference in mslp between Irkutsk and Nemuro'
     
+    return mo
 

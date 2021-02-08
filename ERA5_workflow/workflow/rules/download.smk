@@ -19,6 +19,8 @@ rule download_monthly_era5_pressure:
         """
         python {input} {wildcards.plevel} {wildcards.varName_ERA5} {wildcards.sdate} {wildcards.edate} --fn {output}
         ncks -O --mk_rec_dim time {output} {output}
+        ncks -O --msa -d longitude,181.,360. -d longitude,0.,180.0 {output} {output}
+        ncap2 -O -s 'where(longitude > 180) longitude=longitude-360' {output} {output}
         """
 
 rule download_monthly_era5_single_level:
@@ -33,5 +35,7 @@ rule download_monthly_era5_single_level:
         """
         python {input} -1 {wildcards.varName_ERA5} {wildcards.sdate} {wildcards.edate} --fn {output}
         ncks -O --mk_rec_dim time {output} {output}
+        ncks -O --msa -d longitude,181.,360. -d longitude,0.,180.0 {output} {output}
+        ncap2 -O -s 'where(longitude > 180) longitude=longitude-360' {output} {output}
         """
 
