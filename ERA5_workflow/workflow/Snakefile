@@ -1,0 +1,44 @@
+
+#####################################################################################
+# Snakefile for downloading and processing monthly ERA5 data                        #
+#                                                                                   #
+# Created by Ove Haugvaldstad                                                       #
+#                                                                                   #
+#####################################################################################
+
+# Load config file
+
+configfile: "config/config.yaml"
+
+#----------------------------------CONSTANTS----------------------------------------#
+
+import matplotlib.pyplot as plt
+import cartopy.crs as ccrs
+import xarray as xr
+
+
+
+wildcard_constraints:
+    season='DJF|MAM|JJA|SON',
+    fig_file_extention='png|pdf'
+
+include: "rules/download.smk"
+include: "rules/calc_nao.smk"
+include: "rules/utils.smk"
+include: "rules/plotting.smk"
+include: "rules/calculate_means.smk"
+include: "rules/climatology_calculation.smk"
+include: "rules/calculate_anomalies.smk"
+include: "rules/calc_EAWMI.smk"
+
+p_level_vars = config['variables_pressure_levels']
+SDATE=config['sdate']
+EDATE=config['edate']
+SEASONS=['DJF','MAM','JJA','SON']
+print(config['download_path'] + '|' + config['intermediate_files'])
+rule all:
+    input:
+        config['nao_output_path']+"/era5.single_level.NAO_station.DJF.{}-{}.nc".format(SDATE,EDATE),
+        config['nao_output_path']+"/era5.single_level.NAO_EOF.DJF.{}-{}.nc".format(SDATE,EDATE),
+        config['EAWMI_path']+"/era5.single_level.EAWM_MO.DJF.{}-{}.nc".format(SDATE,EDATE),
+        config['EAWMI_path']+"/era5.single_level.U300hPa_EAWM.DJF.{}-{}.nc".format(SDATE,EDATE)
