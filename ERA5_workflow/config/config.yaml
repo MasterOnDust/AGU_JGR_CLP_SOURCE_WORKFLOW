@@ -7,27 +7,17 @@ figs_path: "results/figs"
 intermediate_files: "/opt/uio/flexpart/ERA5/intermediate_results"
 nao_output_path: "results/nao"
 EAWMI_path: "results/eawmi"
+ao_output_path: "results/ao"
 
-# Variables to download
+# Variables name used to constrain the wildcards
 
-variables_single_level:
+variables:
   - 2m_temperature
   - mean_sea_level_pressure
   - snow_depth
-
-# For pressure_levels the levels needs to specified aswell
-
-variables_pressure_levels:
-  temperature:
-    - 850
-    - 500
-    - 250
-  Geopotential:
-    - 850
-    - 500
-    - 250
-  u_component_of_wind:
-    - 300
+  - temperature
+  - Geopotential
+  - u_component_of_wind
 
 # Set first and last year to download.
 sdate: 1979
