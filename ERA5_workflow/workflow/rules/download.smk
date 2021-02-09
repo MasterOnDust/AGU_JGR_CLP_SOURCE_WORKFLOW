@@ -2,10 +2,7 @@
 # Load config file:
 
 DOWNLOADS=config["download_path"]
-VARNAME_PRESSURE_LEVEL="|".join(config['variables_pressure_levels'].keys())
-VARNME_SURFACE="|".join(config['variables_single_level'])
-
-
+VARNAMES="|".join(config['variables'])
 
 rule download_monthly_era5_pressure:
     input: "workflow/scripts/download_era5_monthly.py"
@@ -14,7 +11,7 @@ rule download_monthly_era5_pressure:
     threads: 1
     params: data_dir=DOWNLOADS
     wildcard_constraints:
-        varName_ERA5=VARNAME_PRESSURE_LEVEL + '|' + VARNME_SURFACE
+        varName_ERA5=VARNAMES
     shell: 
         """
         python {input} {wildcards.plevel} {wildcards.varName_ERA5} {wildcards.sdate} {wildcards.edate} --fn {output}
@@ -30,7 +27,7 @@ rule download_monthly_era5_single_level:
     threads: 1
     params: data_dir=DOWNLOADS
     wildcard_constraints:
-        varName_ERA5=VARNAME_PRESSURE_LEVEL + '|' + VARNME_SURFACE
+        varName_ERA5=VARNAMES
     shell:
         """
         python {input} -1 {wildcards.varName_ERA5} {wildcards.sdate} {wildcards.edate} --fn {output}

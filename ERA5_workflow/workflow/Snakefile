@@ -30,15 +30,15 @@ include: "rules/calculate_means.smk"
 include: "rules/climatology_calculation.smk"
 include: "rules/calculate_anomalies.smk"
 include: "rules/calc_EAWMI.smk"
+include: "rules/calc_AO.smk"
 
-p_level_vars = config['variables_pressure_levels']
 SDATE=config['sdate']
 EDATE=config['edate']
 SEASONS=['DJF','MAM','JJA','SON']
-print(config['download_path'] + '|' + config['intermediate_files'])
 rule all:
     input:
         config['nao_output_path']+"/era5.single_level.NAO_station.DJF.{}-{}.nc".format(SDATE,EDATE),
         config['nao_output_path']+"/era5.single_level.NAO_EOF.DJF.{}-{}.nc".format(SDATE,EDATE),
         config['EAWMI_path']+"/era5.single_level.EAWM_MO.DJF.{}-{}.nc".format(SDATE,EDATE),
-        config['EAWMI_path']+"/era5.single_level.U300hPa_EAWM.DJF.{}-{}.nc".format(SDATE,EDATE)
+        config['EAWMI_path']+"/era5.single_level.U300hPa_EAWM.DJF.{}-{}.nc".format(SDATE,EDATE),
+        config['ao_output_path']+"/era5.1000hPa.AO_EOF.DJF.{}-{}.nc".format(SDATE,EDATE)
