@@ -11,3 +11,10 @@ dependencies:
   - ecmwf-api-client
   - vim
   - snakemake
+  - eofs
+  - nco
+  - git
+  - xarray
+  - matplotlib
+  - graphviz
+  - cartopy
