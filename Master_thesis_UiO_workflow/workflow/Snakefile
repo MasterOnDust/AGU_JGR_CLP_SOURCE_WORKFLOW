@@ -1,9 +1,14 @@
 
 #####################################################################################
-# Snakefile for downloading and processing monthly ERA5 data                        #
-#                                                                                   #
-# Created by Ove Haugvaldstad                                                       #
-#                                                                                   #
+# Workflow for processing FLEXPART/FLEXDUST model output, for doing analysis        # 
+# with regards to the "Tracing the winds" project and master thesis with working    #
+# title "Aeolian dust sources, transport and deposition over the Chinese            #
+# Loess Plateau during 1999-2019: A study using the FLEXDUST and FLEXPART models    # 
+# by Ove Haugvaldstad et al"                                                        #
+# Include rules processing and downloading ERA5 data                                # 
+#                                                                                   # 
+# Created by Ove Haugvaldstad, ovewh@student.geo.uio.no                             #
+#                                                                                   # 
 #####################################################################################
 
 # Load config file
@@ -19,24 +24,29 @@ import xarray as xr
 
 
 wildcard_constraints:
-    season='DJF|MAM|JJA|SON',
+    season='DJF|MAM',
     fig_file_extention='png|pdf'
 
-include: "rules/download.smk"
-include: "rules/calc_nao.smk"
-include: "rules/utils.smk"
+include: "rules/process_ERA5_rules/download.smk"
+include: "rules/process_ERA5_rules/calc_nao.smk"
+include: "rules/process_ERA5_rules/utils.smk"
 include: "rules/plotting.smk"
-include: "rules/calculate_means.smk"
-include: "rules/climatology_calculation.smk"
-include: "rules/calculate_anomalies.smk"
-include: "rules/calc_EAWMI.smk"
-include: "rules/calc_AO.smk"
-include: "rules/calc_APV_indecies.smk"
+include: "rules/process_ERA5_rules/calculate_means.smk"
+include: "rules/process_ERA5_rules/climatology_calculation.smk"
+include: "rules/process_ERA5_rules/calculate_anomalies.smk"
+include: "rules/process_ERA5_rules/calc_EAWMI.smk"
+include: "rules/process_ERA5_rules/calc_AO.smk"
+include: "rules/process_ERA5_rules/calc_APV_indecies.smk"
 include: "rules/precipitation_at_receptor.smk"
+include: 'rules/process_models_data_rules/process_emission_field.smk'
+include: 'rules/process_models_data_rules/process_source_contribution.smk'
+include: 'rules/process_models_data_rules/calc_total_deposition.smk'
 
 SDATE=config['sdate']
 EDATE=config['edate']
-SEASONS=['DJF','MAM','JJA','SON']
+MODEL_SDATE=config['m_sdate']
+MODEL_EDATE=config['m_edate']
+SEASONS=['DJF','MAM']
 rule all:
     input:
         config['nao_output_path']+"/era5.single_level.NAO_station.DJF.{}-{}.nc".format(SDATE,EDATE),
@@ -47,3 +57,20 @@ rule all:
         config['APVI_index_outpath']+"/era5.500hPa.APVI_index.DJF.{}-{}.nc".format(SDATE,EDATE),
         expand(config['Precipitation'] + '/era5.single_level.total_precipitation.{loc}.MAM.{S}-{E}.csv', S =SDATE,E=EDATE, loc=config['receptors'].keys()),
         
+        config['flexdust_results']+'/emission_flux.time_series.taklamakan.MAM.1999-2019.nc',
+        expand(config['intermediate_results_models']+'/{kind}/{kind}.{location}.{size}.monthly.{sdate}-{edate}.nc',
+              location=['SACOL','LINGTAI','BADOE','SHAPOTOU','YINCHUAN', 'LANTIAN'], kind=['wetdep','drydep'],
+              size=['20micron','2micron'], sdate=MODEL_SDATE,edate=MODEL_EDATE),
+        expand(config['intermediate_results_models']+'/total_deposition/total_deposition.{location}.{size}.monthly.{sdate}-{edate}.nc',
+              location=['SACOL','LINGTAI','BADOE','SHAPOTOU','YINCHUAN', 'LANTIAN'], 
+              size=['20micron','2micron'], sdate=MODEL_SDATE,edate=MODEL_EDATE),
+        expand('results/model_results/total_deposition/total_deposition.{location}.{size}.MAM.{sdate}-{edate}.nc',
+              location=['SACOL','LINGTAI','BADOE','SHAPOTOU','YINCHUAN', 'LANTIAN'], 
+              size=['20micron','2micron'], sdate=MODEL_SDATE,edate=MODEL_EDATE),
+        expand('results/model_results/{kind}/{kind}.{location}.{size}.MAM.{sdate}-{edate}.nc',
+              location=['SACOL','LINGTAI','BADOE','SHAPOTOU','YINCHUAN', 'LANTIAN'], 
+              size=['20micron','2micron'], sdate=MODEL_SDATE,edate=MODEL_EDATE,kind=['wetdep','drydep']),
+        expand('results/model_results/{kind}/{kind}.{location}.{region}.{size}.MAM.{sdate}-{edate}.nc',
+            location=['SACOL','LINGTAI','BADOE','SHAPOTOU','YINCHUAN', 'LANTIAN'], 
+              size=['20micron','2micron'], sdate=MODEL_SDATE,edate=MODEL_EDATE,kind=['wetdep','drydep','total_deposition'],
+              region=['taklamakan','mongolia','north_west'])
