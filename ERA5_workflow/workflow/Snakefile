@@ -31,6 +31,8 @@ include: "rules/climatology_calculation.smk"
 include: "rules/calculate_anomalies.smk"
 include: "rules/calc_EAWMI.smk"
 include: "rules/calc_AO.smk"
+include: "rules/calc_APV_indecies.smk"
+include: "rules/precipitation_at_receptor.smk"
 
 SDATE=config['sdate']
 EDATE=config['edate']
@@ -41,4 +43,7 @@ rule all:
         config['nao_output_path']+"/era5.single_level.NAO_EOF.DJF.{}-{}.nc".format(SDATE,EDATE),
         config['EAWMI_path']+"/era5.single_level.EAWM_MO.DJF.{}-{}.nc".format(SDATE,EDATE),
         config['EAWMI_path']+"/era5.single_level.U300hPa_EAWM.DJF.{}-{}.nc".format(SDATE,EDATE),
-        config['ao_output_path']+"/era5.1000hPa.AO_EOF.DJF.{}-{}.nc".format(SDATE,EDATE)
+        config['ao_output_path']+"/era5.1000hPa.AO_EOF.DJF.{}-{}.nc".format(SDATE,EDATE),
+        config['APVI_index_outpath']+"/era5.500hPa.APVI_index.DJF.{}-{}.nc".format(SDATE,EDATE),
+        expand(config['Precipitation'] + '/era5.single_level.total_precipitation.{loc}.MAM.{S}-{E}.csv', S =SDATE,E=EDATE, loc=config['receptors'].keys()),
+        

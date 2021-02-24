@@ -1,13 +1,15 @@
 # This file configures the workflow on a global scale.
 # Setting the global path variables etss
 
-# Setting different global paths where the result should be stored
-download_path: "/opt/uio/flexpart/ERA5/monthly"
+# Setting different global paths where the result should be stored# 
+download_path: "downloads/monthly"
 figs_path: "results/figs"
-intermediate_files: "/opt/uio/flexpart/ERA5/intermediate_results"
+intermediate_files: "downloads/intermediate_results"
 nao_output_path: "results/nao"
 EAWMI_path: "results/eawmi"
 ao_output_path: "results/ao"
+APVI_index_outpath: "results/apv"
+Precipitation: "results/precip"
 
 # Variables name used to constrain the wildcards
 
@@ -18,7 +20,61 @@ variables:
   - temperature
   - Geopotential
   - u_component_of_wind
+  - total_precipitation
+  - v_component_of_wind
 
 # Set first and last year to download.
 sdate: 1979
 edate: 2019
+
+# Recepotor Location used in the procject.
+
+receptors:
+    SACOL:
+        lon: 104.1370
+        lat: 35.96400
+    BADOE:
+        lon: 111.1700
+        lat: 39.00300
+    LANTIAN:
+        lon: 109.2560
+        lat: 34.18000
+    LINGTAI:
+        lon: 107.7890
+        lat: 35.71000 
+    SHAPOTOU:
+        lon: 105.0475
+        lat: 34.18000
+    YINCHUAN:
+        lon: 106.1010
+        lat: 38.50000
+    LUOCHUAN:
+        lat: 109.4240
+        lon: 35.71000
+
+source_regions:
+    taklamakan:
+        lon0: 75
+        lon1: 90
+        lat0: 36
+        lat1: 42
+    north_west:
+        lon0: 100
+        lon1: 110
+        lat0: 37
+        lat1: 42
+    mongolia:
+        lon0: 95
+        lon1: 110
+        lat0: 43
+        lat1: 50
+    jungger_basin:
+        lon0: 80
+        lon1: 90
+        lat0: 43
+        lat1: 47
+    qaidam_basin:
+        lon0: 90
+        lon1: 100
+        lat0: 35
+        lat1: 40
