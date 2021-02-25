@@ -8,14 +8,14 @@ rule calc_total_deposition:
         outpath=config['intermediate_results_models']+'/total_deposition/total_deposition.{location}.{psize}.monthly.{sdate}-{edate}.nc'
     
     run:
-        from scripts.calc_totaldeposition import get_total_depostion
+        from scripts.process_model_data_scripts.calc_totaldeposition import get_total_depostion
         import time
         
         wetdep=xr.open_dataset(input.wetdep_path)
         drydep=xr.open_dataset(input.drydep_path)
 #         from IPython import embed; embed()
         totdep = get_total_depostion(drydep,wetdep)
-        totdep.attrs['history'] = time.ctime() + 'total deposition calculated from ' + input.drydep_path + ' ' + input.wetdep_path  + totdep.attrs['history']
+        totdep.attrs['history'] = time.ctime() + 'total deposition calculated from ' + input.drydep_path + ' ' + input.wetdep_path
         totdep.attrs['filename']=output.outpath 
         totdep.to_netcdf(output.outpath)
         
@@ -40,16 +40,19 @@ rule source_contribution_source_region_timeseries:
     input:
         depo_data='results/model_results/{kind}/{kind}.{location}.{psize}.MAM.{sdate}-{edate}.nc'
     output:
-        outpath='results/model_results/{kind}/{kind}.{location}.{region}.{psize}.MAM.{sdate}-{edate}.nc'
+        outpath='results/model_results/time_series/{kind}/{kind}.{location}.{region}.{psize}.MAM.{sdate}-{edate}.nc'
     wildcard_constraints:
-        region='|'.join(config['source_regions'].keys())
+        region='|'.join(config['source_regions'].keys()) + '|total'
         
     run:
-        from scripts.process_source_contribution import create_timeseries
-        region=config['source_regions'][wildcards.region]
-        ds=xr.open_dataset(input.depo_data)
+        from scripts.process_model_data_scripts.process_source_contribution import create_timeseries
         
-        ds=create_timeseries(ds,region['lon0'], region['lon1'], region['lat0'], region['lat1'])
+        ds=xr.open_dataset(input.depo_data)
+        if wildcards.region=='total':
+            ds = create_timeseries(ds)
+        else:
+            region=config['source_regions'][wildcards.region]
+            ds=create_timeseries(ds,region['lon0'], region['lon1'], region['lat0'], region['lat1'])
         
         ds.attrs['title']='FLEXDUST/FLEXPART simulated dust deposition' + wildcards.region
         ds.to_netcdf(output.outpath)

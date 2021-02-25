@@ -28,7 +28,7 @@ def select_years_to_composite(timeseries,criterion='1-std'):
         
     """
     
-    if criterion == '0.5-std':
+    if criterion == '05-std':
         c = 0.5
     elif criterion == '1-std':
         c = 1
@@ -95,8 +95,9 @@ def create_composite(years_to_composite,contour_f=None,
     if all(v is None for v in [contour,contour_f,pcolormesh, quiver]):
         raise(ValueError('No data provided'))
     if all(v is not None for v in [contour_f, pcolormesh]):
-        raise(ValueError('Both contour_f and pcolormesh cannot be provided at the same time'))     
-
+        raise(ValueError('Both contour_f and pcolormesh cannot be provided at the same time'))
+    if len(years_to_composite)==0:
+        raise(ValueError('Years to composite cannot be of 0 size'))
     variables = {}
     composite_data = xr.Dataset()
     composite_data.attrs['title'] = 'Composite mean data'
@@ -106,6 +107,7 @@ def create_composite(years_to_composite,contour_f=None,
         contour['time'] = contour.time.dt.year
         composite = _average_composite(years_to_composite, contour)
         composite_data[contour_varName] = composite
+        composite_data[contour_varName+'_clim'] = _calculate_climatology(contour, **composite_anomalies_kw)
         composite_data.attrs['contour'] = contour_varName
     
     if quiver:
@@ -115,6 +117,8 @@ def create_composite(years_to_composite,contour_f=None,
         composite = _average_composite(years_to_composite,quiver)
         composite_data['u'] = composite['u']
         composite_data['v'] = composite['v']
+        composite_data['u_clim'] = _calculate_climatology(quiver['u'], **composite_anomalies_kw)
+        composite_data['v_clim'] = _calculate_climatology(quiver['v'], **composite_anomalies_kw)
         composite_data.attrs['quiver'] = ['u','v']
     
     if isinstance(contour_f, xr.core.dataarray.DataArray):
@@ -123,6 +127,7 @@ def create_composite(years_to_composite,contour_f=None,
         contour_f['time'] = contour_f.time.dt.year
         composite=_average_composite(years_to_composite, contour_f)
         composite_data[contourf_varName] = composite
+        composite_data[contourf_varName+'_clim'] = _calculate_climatology(contour_f, **composite_anomalies_kw)
         composite_data.attrs['contourf'] = contourf_varName
     
     if isinstance(pcolormesh, xr.core.dataarray.DataArray):
@@ -131,6 +136,7 @@ def create_composite(years_to_composite,contour_f=None,
         pcolormesh['time'] = pcolormesh.time.dt.year
         composite = _average_composite(years_to_composite,pcolormesh)
         composite_data[pcolormesh_varName] = composite
+        composite_data[pcolormesh_varName+'_clim'] = _calculate_climatology(pcolormesh, **composite_anomalies_kw)
         composite_data.attrs['pcolormesh'] = pcolormesh_varName
     if composite_anomailies:
         for key, item in variables.items():
@@ -148,7 +154,7 @@ def create_composite(years_to_composite,contour_f=None,
     else:
         composite_data.attrs['anomalies'] = 'False' 
     
-    composite_data.attrs['years_compoisited']=years_to_composite
+    composite_data.attrs['years_composited']=years_to_composite
     
     if calc_std:
         for key, item in variables.items():
@@ -162,7 +168,10 @@ def create_composite(years_to_composite,contour_f=None,
         
 def _average_composite(years_to_composite,data):
     """averages the composite years"""
-    data = data.sel(time=years_to_composite).mean(dim='time',keep_attrs=True)
+    if len(years_to_composite) ==1:
+        data = data.sel(time=years_to_composite)
+    else:
+        data = data.sel(time=years_to_composite).mean(dim='time',keep_attrs=True)
     return data
 
 def _calculate_composite_std(years_to_composite, data):

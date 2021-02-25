@@ -41,7 +41,7 @@ m_edate: 2019
 
 # Composite climatological period
 
-clim_date0: 1999
+clim_date0: 1989
 clim_date1: 2019
 
 # Domain for processing FLEXPART/FLEXDUST model output on
@@ -102,3 +102,6 @@ source_regions:
         lon1: 100
         lat0: 35
         lat1: 40
+
+# Number of latitude bins used in temperature gradient calculation
+n_bins_temperature_gradient: 17

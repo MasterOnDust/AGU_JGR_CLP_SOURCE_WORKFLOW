@@ -29,7 +29,7 @@ wildcard_constraints:
     location='|'.join(config['receptors'].keys()),
     region='|'.join(config['source_regions'].keys())+'|total',
     comp_type='std_anom|anom|std|comp_only',
-    threshold='0.5-std|1-std|2-std'
+    threshold='05-std|1-std|2-std'
 
 include: "rules/process_ERA5_rules/download.smk"
 include: "rules/process_ERA5_rules/calc_nao.smk"
@@ -46,6 +46,7 @@ include: 'rules/process_models_data_rules/process_emission_field.smk'
 include: 'rules/process_models_data_rules/process_source_contribution.smk'
 include: 'rules/process_models_data_rules/calc_total_deposition.smk'
 include: 'rules/create_composite.smk'
+include: 'rules/process_ERA5_rules/calc_temperature_gradient.smk'
 
 SDATE=config['sdate']
 EDATE=config['edate']
@@ -77,7 +78,19 @@ rule make_deposition:
         expand('results/model_results/{kind}/{kind}.{location}.{size}.MAM.{sdate}-{edate}.nc',
               location=['SACOL','LINGTAI','BADOE','SHAPOTOU','YINCHUAN', 'LANTIAN'], 
               size=['20micron','2micron'], sdate=MODEL_SDATE,edate=MODEL_EDATE,kind=['wetdep','drydep']),
-        expand('results/model_results/{kind}/{kind}.{location}.{region}.{size}.MAM.{sdate}-{edate}.nc',
+        expand('results/model_results/time_series/{kind}/{kind}.{location}.{region}.{size}.MAM.{sdate}-{edate}.nc',
             location=['SACOL','LINGTAI','BADOE','SHAPOTOU','YINCHUAN', 'LANTIAN'], 
               size=['20micron','2micron'], sdate=MODEL_SDATE,edate=MODEL_EDATE,kind=['wetdep','drydep','total_deposition'],
-              region=['taklamakan','mongolia','north_west'])
+              region=['taklamakan','mongolia','north_west', 'total'])
+
+rule make_composites:
+    input:
+        expand('results/composites/windspeed_geopot/era5.wind_geopot.500hPa.composite.{kind}.{psize}.MAM.{location}.{region}.anom.05-std.{weak_strong}.1999-2019.nc', 
+               kind=['total_deposition'], psize=['2micron','20micron'], 
+               location=['SACOL','LINGTAI','BADOE','SHAPOTOU','YINCHUAN', 'LANTIAN'],
+              region=['taklamakan','mongolia','north_west', 'total'], weak_strong=['weak', 'strong']),
+        expand('results/composites/snow_temperature/era5.temp_2m_snow.single_level.composite.{kind}.{psize}.MAM.{location}.{region}.anom.05-std.{weak_strong}.1999-2019.nc', 
+               kind=['total_deposition'], psize=['2micron','20micron'], 
+               location=['SACOL','LINGTAI','BADOE','SHAPOTOU','YINCHUAN', 'LANTIAN'],
+              region=['taklamakan','mongolia','north_west', 'total'], weak_strong=['weak', 'strong'])
+        
