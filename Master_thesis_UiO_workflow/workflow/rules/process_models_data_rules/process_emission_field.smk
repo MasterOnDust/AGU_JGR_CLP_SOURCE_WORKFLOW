@@ -38,8 +38,6 @@ rule source_region_timeseries:
         path=config['intermediate_results_models']+'/emission_flux.china.{frequency}.{sdate}-{edate}.nc'
     output:
         outpath=config['flexdust_results']+'/emission_flux.time_series.{region}.{frequency}.{sdate}-{edate}.nc'
-    wildcard_constraints:
-        region='|'.join(config['source_regions'].keys())+'|total'
     run:
         
         if wildcards.region=='total':

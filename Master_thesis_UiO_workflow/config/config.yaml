@@ -1,7 +1,8 @@
 # This file configures the workflow on a global scale.
 # Setting the global path variables etss
 
-# Setting different global paths where the result should be stored# 
+# Setting different global paths where the result should be stored
+# Maybe this should be removed and I'll just hard code the paths?
 download_path: "downloads/monthly"
 figs_path: "results/figs"
 intermediate_files: "downloads/intermediate_results"
@@ -37,6 +38,11 @@ edate: 2019
 
 m_sdate: 1999
 m_edate: 2019
+
+# Composite climatological period
+
+clim_date0: 1999
+clim_date1: 2019
 
 # Domain for processing FLEXPART/FLEXDUST model output on
 domain:

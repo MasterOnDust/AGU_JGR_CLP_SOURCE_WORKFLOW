@@ -2,8 +2,8 @@
 
 rule calc_total_deposition:
     input:
-        wetdep_path=config['intermediate_results_models']+'/wetdep/{location}.{psize}.monthly.{sdate}-{edate}.nc',
-        drydep_path=config['intermediate_results_models']+'/drydep/{location}.{psize}.monthly.{sdate}-{edate}.nc'
+        wetdep_path=config['intermediate_results_models']+'/wetdep/wetdep.{location}.{psize}.monthly.{sdate}-{edate}.nc',
+        drydep_path=config['intermediate_results_models']+'/drydep/drydep.{location}.{psize}.monthly.{sdate}-{edate}.nc'
     output:
         outpath=config['intermediate_results_models']+'/total_deposition/total_deposition.{location}.{psize}.monthly.{sdate}-{edate}.nc'
     
@@ -23,9 +23,9 @@ rule sum_spring_deposition:
     input:
         depo_data=config['intermediate_results_models']+'/{kind}/{kind}.{location}.{psize}.monthly.{sdate}-{edate}.nc'
     output:
-        outpath='results/{kind}/{kind}.{location}.{psize}.MAM.{sdate}-{edate}.nc'
+        outpath='results/model_results/{kind}/{kind}.{location}.{psize}.MAM.{sdate}-{edate}.nc'
     wildcard_constraints:
-        location='BADOE|SACOL|LANTIAN|LINGTAI|SHAPOTOU|YINCHUAN'
+        location='|'.join(config['receptors'].keys())
     run:
         ds = xr.open_dataset(input.depo_data)
         spring_depo=ds[ds.varName].groupby('time.year').sum(dim='time',keep_attrs=True)
@@ -38,9 +38,9 @@ rule sum_spring_deposition:
         
 rule source_contribution_source_region_timeseries:
     input:
-        depo_data='results/{kind}/{kind}.{location}.{psize}.MAM.{sdate}-{edate}.nc'
+        depo_data='results/model_results/{kind}/{kind}.{location}.{psize}.MAM.{sdate}-{edate}.nc'
     output:
-        outpath='results/{kind}/{kind}.{location}.{region}.{psize}.MAM.{sdate}-{edate}.nc'
+        outpath='results/model_results/{kind}/{kind}.{location}.{region}.{psize}.MAM.{sdate}-{edate}.nc'
     wildcard_constraints:
         region='|'.join(config['source_regions'].keys())
         

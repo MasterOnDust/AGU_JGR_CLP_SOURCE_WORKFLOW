@@ -25,7 +25,11 @@ import xarray as xr
 
 wildcard_constraints:
     season='DJF|MAM',
-    fig_file_extention='png|pdf'
+    fig_file_extention='png|pdf',
+    location='|'.join(config['receptors'].keys()),
+    region='|'.join(config['source_regions'].keys())+'|total',
+    comp_type='std_anom|anom|std|comp_only',
+    threshold='0.5-std|1-std|2-std'
 
 include: "rules/process_ERA5_rules/download.smk"
 include: "rules/process_ERA5_rules/calc_nao.smk"
@@ -41,6 +45,7 @@ include: "rules/precipitation_at_receptor.smk"
 include: 'rules/process_models_data_rules/process_emission_field.smk'
 include: 'rules/process_models_data_rules/process_source_contribution.smk'
 include: 'rules/process_models_data_rules/calc_total_deposition.smk'
+include: 'rules/create_composite.smk'
 
 SDATE=config['sdate']
 EDATE=config['edate']
@@ -56,8 +61,10 @@ rule all:
         config['ao_output_path']+"/era5.1000hPa.AO_EOF.DJF.{}-{}.nc".format(SDATE,EDATE),
         config['APVI_index_outpath']+"/era5.500hPa.APVI_index.DJF.{}-{}.nc".format(SDATE,EDATE),
         expand(config['Precipitation'] + '/era5.single_level.total_precipitation.{loc}.MAM.{S}-{E}.csv', S =SDATE,E=EDATE, loc=config['receptors'].keys()),
-        
-        config['flexdust_results']+'/emission_flux.time_series.taklamakan.MAM.1999-2019.nc',
+        config['flexdust_results']+'/emission_flux.time_series.taklamakan.MAM.1999-2019.nc'
+
+rule make_deposition:
+    input:
         expand(config['intermediate_results_models']+'/{kind}/{kind}.{location}.{size}.monthly.{sdate}-{edate}.nc',
               location=['SACOL','LINGTAI','BADOE','SHAPOTOU','YINCHUAN', 'LANTIAN'], kind=['wetdep','drydep'],
               size=['20micron','2micron'], sdate=MODEL_SDATE,edate=MODEL_EDATE),

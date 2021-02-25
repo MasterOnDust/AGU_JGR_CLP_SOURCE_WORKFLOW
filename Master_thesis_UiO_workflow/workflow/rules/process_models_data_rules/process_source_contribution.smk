@@ -24,7 +24,7 @@ rule resample_source_contrib:
     output:
         outpath=config['intermediate_results_models']+'/{kind}/{kind}.{location}.{size}.monthly.{sdate}-{edate}.nc'
     wildcard_constraints:
-        location='BADOE|SACOL|LANTIAN|LINGTAI|SHAPOTOU|YINCHUAN',
+        location='|'.join(config['receptors'].keys()),
         size='2micron|20micron',
         kind='drydep|wetdep'
     threads: 1
