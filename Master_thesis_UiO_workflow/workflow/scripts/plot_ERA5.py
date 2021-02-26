@@ -7,9 +7,35 @@ import matplotlib.pyplot as plt
 import xarray as xr
 from cartopy.mpl.gridliner import (LATITUDE_FORMATTER, LONGITUDE_FORMATTER,
                                    Gridliner)
+from cartopy.mpl.gridliner import LongitudeFormatter, LatitudeFormatter
+from matplotlib.ticker import ScalarFormatter,AutoMinorLocator
 from IPython import embed
 from .process_era5 import read_data
 import matplotlib as mpl
+
+def map_close_up(ax):
+    ax=map_china(ax,color='black', alpha=1)
+    ax.set_extent([70,140,25,60], crs=ccrs.PlateCarree())
+    ax.set_xticks([70,80,90,100,110,120,130, 140], crs=ccrs.PlateCarree())
+    ax.set_yticks([25,30,35,40,45,50,55, 60], crs=ccrs.PlateCarree())
+    lon_formatter = LongitudeFormatter(zero_direction_label=True)
+    lat_formatter = LatitudeFormatter()
+    ax.xaxis.set_major_formatter(lon_formatter)
+    ax.yaxis.set_major_formatter(lat_formatter)
+
+def map_large_scale(ax):
+    ax.set_extent([0,180,0,90], crs=ccrs.PlateCarree())
+    ax.set_xticks([0,20,40,60,80,100,120,140,160,180], crs=ccrs.PlateCarree())
+    ax.set_yticks([0,30,60,90], crs=ccrs.PlateCarree())
+    lon_formatter = LongitudeFormatter(zero_direction_label=True, auto_hide=False)
+    lat_formatter = LatitudeFormatter(auto_hide=False)
+    ax.xaxis.set_major_formatter(lon_formatter)
+    ax.yaxis.set_major_formatter(lat_formatter)
+    ax.yaxis.set_minor_locator(  AutoMinorLocator(3))
+    ax.xaxis.set_minor_locator(  AutoMinorLocator(2))
+    ax.coastlines()
+
+
 
 def draw_map_orogaphic_east_asia(ax):
     ylocator = mpl.ticker.FixedLocator([-20,0,20,40,60,80])

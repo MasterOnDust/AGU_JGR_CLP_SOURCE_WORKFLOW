@@ -1,6 +1,9 @@
 SDATE = config['sdate']
 EDATE = config['edate']
 
+
+
+
 rule windspeed_geopot_wind_composite:
     input:
         u_wind=config['intermediate_files'] + '/era5.{plevel}.u_component_of_wind.{season}.'+ str(SDATE)+'-'+str(EDATE)+'.nc',
