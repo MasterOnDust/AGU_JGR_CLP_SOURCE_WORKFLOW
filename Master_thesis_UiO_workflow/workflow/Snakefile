@@ -47,6 +47,8 @@ include: 'rules/process_models_data_rules/process_source_contribution.smk'
 include: 'rules/process_models_data_rules/calc_total_deposition.smk'
 include: 'rules/create_composite.smk'
 include: 'rules/process_ERA5_rules/calc_temperature_gradient.smk'
+include: 'rules/plot_composites.smk'
+include: 'rules/calculate_correlations.smk'
 
 SDATE=config['sdate']
 EDATE=config['edate']
@@ -83,14 +85,22 @@ rule make_deposition:
               size=['20micron','2micron'], sdate=MODEL_SDATE,edate=MODEL_EDATE,kind=['wetdep','drydep','total_deposition'],
               region=['taklamakan','mongolia','north_west', 'total'])
 
-rule make_composites:
+rule make_composites_snow_temperature:
     input:
-        expand('results/composites/windspeed_geopot/era5.wind_geopot.500hPa.composite.{kind}.{psize}.MAM.{location}.{region}.anom.05-std.{weak_strong}.1999-2019.nc', 
-               kind=['total_deposition'], psize=['2micron','20micron'], 
-               location=['SACOL','LINGTAI','BADOE','SHAPOTOU','YINCHUAN', 'LANTIAN'],
-              region=['taklamakan','mongolia','north_west', 'total'], weak_strong=['weak', 'strong']),
-        expand('results/composites/snow_temperature/era5.temp_2m_snow.single_level.composite.{kind}.{psize}.MAM.{location}.{region}.anom.05-std.{weak_strong}.1999-2019.nc', 
+        expand('results/composites/figs/snow_temperature/era5.temp_2m_snow.single_level.composite.{kind}.{psize}.MAM.{location}.{region}.anom.05-std.{weak_strong}.1999-2019.png', 
                kind=['total_deposition'], psize=['2micron','20micron'], 
                location=['SACOL','LINGTAI','BADOE','SHAPOTOU','YINCHUAN', 'LANTIAN'],
               region=['taklamakan','mongolia','north_west', 'total'], weak_strong=['weak', 'strong'])
-        
+
+rule make_500_hPa_composite:
+    input:
+        expand('results/composites/figs/windspeed_geopot/era5.wind_geopot.500hPa.composite.{kind}.{psize}.MAM.{location}.{region}.anom.05-std.{weak_strong}.1999-2019.png', 
+               kind=['total_deposition'], psize=['2micron','20micron'], 
+               location=['SACOL','LINGTAI','BADOE','SHAPOTOU','YINCHUAN', 'LANTIAN'],
+              region=['taklamakan','mongolia','north_west', 'total'], weak_strong=['weak', 'strong'])
+rule make_850_wind_and_mslp_composite:
+    input:
+        expand('results/composites/msl_pressure_wind/era5.wind_msl.850hPa.composite.{kind}.{psize}.MAM.{location}.{region}.anom.05-std.{weak_strong}.1999-2019.nc', 
+               kind=['total_deposition'], psize=['2micron','20micron'], 
+               location=['SACOL','LINGTAI','BADOE','SHAPOTOU','YINCHUAN', 'LANTIAN'],
+              region=['taklamakan','mongolia','north_west', 'total'], weak_strong=['weak', 'strong'])
