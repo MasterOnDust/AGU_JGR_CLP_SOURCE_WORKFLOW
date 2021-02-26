@@ -24,7 +24,7 @@ def calculate_temperature_gradient(temp_dataset, n_latitude_bins=17):
     temp_gradient['anomalies'].attrs['units']='K/deg(latitude)'
     temp_gradient['anomalies'].attrs['long_name']='Temperature gradient anomalies'
     temp_gradient['t2m'] = ds_grouped
-    return ds
+    return temp_gradient
     
     
     
