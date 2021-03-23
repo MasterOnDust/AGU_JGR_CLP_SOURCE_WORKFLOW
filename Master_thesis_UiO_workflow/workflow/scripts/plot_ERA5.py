@@ -11,10 +11,11 @@ from cartopy.mpl.gridliner import LongitudeFormatter, LatitudeFormatter
 from matplotlib.ticker import ScalarFormatter,AutoMinorLocator
 from IPython import embed
 from .process_era5 import read_data
+from DUST.plot.maps import map_china
 import matplotlib as mpl
 
 def map_close_up(ax):
-    ax=map_china(ax,color='black', alpha=1)
+    ax=map_china(ax)
     ax.set_extent([70,140,25,60], crs=ccrs.PlateCarree())
     ax.set_xticks([70,80,90,100,110,120,130, 140], crs=ccrs.PlateCarree())
     ax.set_yticks([25,30,35,40,45,50,55, 60], crs=ccrs.PlateCarree())
