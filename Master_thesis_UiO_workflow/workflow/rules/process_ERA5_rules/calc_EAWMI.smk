@@ -1,5 +1,5 @@
 
-from scripts.calc_EAWM import calc_EAWM_zonal_300hPa, calc_MO_index
+from thesis_toolbox.calc_indicies.calc_EAWM import calc_EAWM_zonal_300hPa, calc_MO_index
 
 rule calc_EAWMI_zonal_u300hPa:
     input:
@@ -10,6 +10,7 @@ rule calc_EAWMI_zonal_u300hPa:
         frequency='monthly|DJF|MAM|JJA|SON'
     threads: 1
     run:
+        from thesis_toolbox.calc_indicies.calc_EAWM import calc_EAWM_zonal_300hPa
         u_300_ds = xr.open_dataset(input.u_300_data) 
         eawmi=calc_EAWM_zonal_300hPa(u_300_ds)
         eawmi.to_netcdf(output.outpath)
@@ -22,6 +23,7 @@ rule calc_MO_mslp_index:
     wildcard_constraints:
         frequency='monthly|DJF|MAM|JJA|SON'
     run:
+        from thesis_toolbox.calc_indicies.calc_EAWM import calc_MO_index
         djf_mslp = xr.open_dataset(input.mslp_data)
         MO= calc_MO_index(djf_mslp)
         MO.to_netcdf(output.outpath)

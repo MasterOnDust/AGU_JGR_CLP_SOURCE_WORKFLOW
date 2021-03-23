@@ -10,7 +10,6 @@
 #;F: 42-45 ; 112-124    North east                                         #
 ############################################################################
 
-from scripts.process_model_data_scripts.emission_flux_series import resample_emission_flux, create_timeseries
 
 rule resample:
     input:
@@ -24,6 +23,7 @@ rule resample:
     wildcard_constraints:
         frequency='MAM|monthly'
     run:
+        from thesis_toolbox.process_model_data.emission_flux_series import resample_emission_flux, create_timeseries
         if wildcards.frequency=='monthly':
             freq='m'
         else:
@@ -39,7 +39,7 @@ rule source_region_timeseries:
     output:
         outpath=config['flexdust_results']+'/emission_flux.time_series.{region}.{frequency}.{sdate}-{edate}.nc'
     run:
-        
+        from thesis_toolbox.process_model_data.emission_flux_series import resample_emission_flux, create_timeseries
         if wildcards.region=='total':
             ts=create_timeseries(input.path)
         else:

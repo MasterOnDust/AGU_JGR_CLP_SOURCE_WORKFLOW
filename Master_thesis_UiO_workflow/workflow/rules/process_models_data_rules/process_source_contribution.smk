@@ -1,5 +1,4 @@
-from DUST.utils.resample import resample_monthly, concatenate_monthly
-import time
+
 
 def get_paths(path0,sdate, edate, kind, location, size):
     years = [str(year) for year in range(int(sdate), int(edate)+1)]
@@ -29,8 +28,9 @@ rule resample_source_contrib:
         kind='drydep|wetdep'
     threads: 1
     run: 
+        from DUST.utils.resample import resample_monthly, concatenate_monthly
+        import time
         paths=input.paths
-#         from IPython import embed; embed()
         dsets_list=[resample_monthly(xr.open_dataset(path)) for path in paths]
 
         dsets=concatenate_monthly(dsets_list)

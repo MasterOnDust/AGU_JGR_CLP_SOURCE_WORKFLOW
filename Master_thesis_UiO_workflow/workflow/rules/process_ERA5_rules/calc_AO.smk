@@ -1,4 +1,4 @@
-from scripts.calc_AO import calc_AO_EOF
+
 
 
 DOWNLOADS=config["download_path"]
@@ -13,6 +13,7 @@ rule eof_based_AO:
     wildcard_constraints:
         frequency='monthly|DJF|MAM|JJA|SON'
     run:
+        from thesis_toolbox.calc_indicies.calc_AO import calc_AO_EOF
         geoPot_data_anomaly = xr.open_dataset(input.geoPot_data_anomaly)
         AO_eof = calc_AO_EOF(geoPot_data_anomaly['Z'])
 
