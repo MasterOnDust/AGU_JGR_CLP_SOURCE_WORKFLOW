@@ -46,6 +46,27 @@ def download_era5_monthly_single_level(variable,sdate,edate,filename):
         },
         filename)
 
+def download_era5_monthly_land(variable,sdate,edate,filename):
+    c = cdsapi.Client()
+    years = [str(year) for year in range(sdate, edate+1)]
+    c.retrieve(
+        'reanalysis-era5-land-monthly-means',
+        {
+            'format': 'netcdf',
+            'product_type': 'monthly_averaged_reanalysis',
+            'variable': variable,
+            'year': years
+            ,
+            'month': [
+                '01', '02', '03',
+                '04', '05', '06',
+                '07', '08', '09',
+                '10', '11', '12',
+            ],
+            'time': '00:00',
+        },
+        filename)
+
 if __name__=="__main__":
     parser=argparse.ArgumentParser(description="Download monthly ERA5 data from cds")
     parser.add_argument('pressure_level', 
@@ -62,8 +83,10 @@ if __name__=="__main__":
     edate=args.edate
     variable=args.variable
     filename=args.filename
-    if pressure_level=='-1':
+    if pressure_level=='single_level':
         download_era5_monthly_single_level(variable,sdate,edate,filename)
+    elif pressure_level =='land':
+        download_era5_monthly_land(variable,sdate,edate,filename)
     else:
         download_era5_monthly_pressure_level(pressure_level,variable,sdate,edate,filename)
     
