@@ -1,5 +1,4 @@
 
-from thesis_toolbox.calc_indicies.calc_EAWM import calc_EAWM_zonal_300hPa, calc_MO_index
 
 rule calc_EAWMI_zonal_u300hPa:
     input:

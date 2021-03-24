@@ -16,6 +16,7 @@ rule windspeed_geopot_wind_composite:
     run:
         from thesis_toolbox.composites.setup_thesis_data import geopot_wind_composite
         from thesis_toolbox.composites.create_composites import select_years_to_composite
+        import numpy as np
         timeseries = xr.open_dataset(input.timeseries)
         weak_years, strong_years = select_years_to_composite(timeseries[timeseries.varName],wildcards.threshold)
         wind_u = xr.open_dataset(input.u_wind)
@@ -53,6 +54,7 @@ rule mean_sea_level_pressure_and_wind:
     run:
         from thesis_toolbox.composites.setup_thesis_data import mslp_wind_composite
         from thesis_toolbox.composites.create_composites import select_years_to_composite
+        import numpy as np
         timeseries = xr.open_dataset(input.timeseries)
         weak_years, strong_years = select_years_to_composite(timeseries[timeseries.varName],wildcards.threshold)
         wind_u = xr.open_dataset(input.u_wind)

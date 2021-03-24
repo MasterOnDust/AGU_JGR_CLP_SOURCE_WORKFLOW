@@ -1,4 +1,4 @@
-from scripts.process_era5 import read_data
+from thesis_toolbox.process_era5 import read_data
 
 rule calculate_seasonal_anomaly:
     input:

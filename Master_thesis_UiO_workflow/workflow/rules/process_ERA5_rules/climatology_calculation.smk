@@ -1,4 +1,4 @@
-from scripts.process_era5 import calculate_monthly_clm,read_data,resample_seasonal
+from thesis_toolbox.process_era5 import calculate_monthly_clm,read_data,resample_seasonal
 
 
         

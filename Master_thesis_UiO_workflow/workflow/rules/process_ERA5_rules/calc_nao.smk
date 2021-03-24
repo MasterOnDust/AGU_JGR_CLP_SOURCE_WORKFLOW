@@ -6,7 +6,7 @@
 
 # Import scripts
 
-from scripts.calc_NAO import calc_NAO_EOF, calc_NAO_station
+from thesis_toolbox.calc_indicies.calc_NAO import calc_NAO_EOF, calc_NAO_station
 
 DOWNLOADS=config["download_path"]
 DATA_FOLDER=config["intermediate_files"]

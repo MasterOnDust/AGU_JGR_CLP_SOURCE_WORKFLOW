@@ -71,33 +71,15 @@ rule all:
 
 rule make_deposition:
     input:
-        expand(config['intermediate_results_models']+'/{kind}/{kind}.{location}.{size}.monthly.{sdate}-{edate}.nc',
-              location=['SACOL','LINGTAI','BADOE','SHAPOTOU','YINCHUAN', 'LANTIAN'], kind=['wetdep','drydep'],
-              size=['20micron','2micron'], sdate=MODEL_SDATE,edate=MODEL_EDATE),
-        expand(config['intermediate_results_models']+'/total_deposition/total_deposition.{location}.{size}.monthly.{sdate}-{edate}.nc',
-              location=['SACOL','LINGTAI','BADOE','SHAPOTOU','YINCHUAN', 'LANTIAN'], 
-              size=['20micron','2micron'], sdate=MODEL_SDATE,edate=MODEL_EDATE),
-        expand('results/model_results/total_deposition/total_deposition.{location}.{size}.MAM.{sdate}-{edate}.nc',
-              location=['SACOL','LINGTAI','BADOE','SHAPOTOU','YINCHUAN', 'LANTIAN'], 
-              size=['20micron','2micron'], sdate=MODEL_SDATE,edate=MODEL_EDATE),
-        expand('results/model_results/{kind}/{kind}.{location}.{size}.MAM.{sdate}-{edate}.nc',
-              location=['SACOL','LINGTAI','BADOE','SHAPOTOU','YINCHUAN', 'LANTIAN'], 
-              size=['20micron','2micron'], sdate=MODEL_SDATE,edate=MODEL_EDATE,kind=['wetdep','drydep']),
         expand('results/model_results/time_series/{kind}/{kind}.{location}.{region}.{size}.MAM.{sdate}-{edate}.nc',
             location=['SACOL','LINGTAI','BADOE','SHAPOTOU','YINCHUAN', 'LANTIAN'], 
-              size=['20micron','2micron'], sdate=MODEL_SDATE,edate=MODEL_EDATE,kind=['wetdep','drydep','total_deposition'],
-              region=['taklamakan','mongolia','north_west', 'total'])
-
-rule make_composites_snow_temperature:
-    input:
-        expand('results/composites/figs/snow_temperature/era5.temp_2m_snow.single_level.composite.{kind}.{psize}.MAM.{location}.{region}.05-std.1999-2019.png', 
-               kind=['total_deposition'], psize=['2micron','20micron'], 
-               location=['SACOL','LINGTAI','BADOE','SHAPOTOU','YINCHUAN', 'LANTIAN'],
+              size=['2micron','20micron'], sdate=MODEL_SDATE,edate=MODEL_EDATE,kind=['total_deposition'],
               region=['total'])
+
 
 rule make_500_hPa_composite:
     input:
-        expand('results/composites/figs/windspeed_geopot/era5.wind_geopot.500hPa.composite.{kind}.{psize}.{season}.{location}.{region}.05-std.1999-2019.png', 
+        expand('results/composites/windspeed_geopot/era5.wind_geopot.500hPa.composite.{kind}.{psize}.{season}.{location}.{region}.05-std.1999-2019.nc', 
                kind=['total_deposition'], psize=['2micron','20micron'], 
                location=['SACOL','LINGTAI','BADOE','SHAPOTOU','YINCHUAN', 'LANTIAN'],
               region=['total'], season=['DJF','MAM'])
