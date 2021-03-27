@@ -10,7 +10,7 @@ from cartopy.mpl.gridliner import (LATITUDE_FORMATTER, LONGITUDE_FORMATTER,
 from cartopy.mpl.gridliner import LongitudeFormatter, LatitudeFormatter
 from matplotlib.ticker import ScalarFormatter,AutoMinorLocator
 from IPython import embed
-from .process_era5 import read_data
+from thesis_toolbox.process_era5 import read_data
 from DUST.plot.maps import map_china
 import matplotlib as mpl
 

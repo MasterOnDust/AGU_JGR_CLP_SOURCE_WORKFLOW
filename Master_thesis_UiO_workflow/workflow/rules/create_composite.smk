@@ -8,7 +8,7 @@ rule windspeed_geopot_wind_composite:
         geopot=config['intermediate_files'] + '/era5.{plevel}.GeopotHeight.{season}.'+ str(SDATE)+'-'+str(EDATE)+'.nc',
         timeseries='results/model_results/time_series/{kind}/{kind}.{location}.{region}.{psize}.MAM.{sdate}-{edate}.nc'
     output:
-        outpath='results/composites/windspeed_geopot/era5.wind_geopot.{plevel}.composite.{kind}.{psize}.{season}.{location}.{region}.{threshold}.{sdate}-{edate}.nc'
+        outpath='results/composites/windspeed_geopot_{plevel}/era5.wind_geopot.{plevel}.composite.{kind}.{psize}.{season}.{location}.{region}.{threshold}.{sdate}-{edate}.nc'
     params:
         clim_sdate = config['clim_date0'],
         clim_edate = config['clim_date1']
@@ -46,7 +46,7 @@ rule mean_sea_level_pressure_and_wind:
         msl=config['intermediate_files'] + '/era5.single_level.mean_sea_level_pressure.{season}.'+ str(SDATE)+'-'+str(EDATE)+'.nc',
         timeseries='results/model_results/time_series/{kind}/{kind}.{location}.{region}.{psize}.MAM.{sdate}-{edate}.nc'
     output:
-        outpath='results/composites/msl_pressure_wind/era5.wind_msl.{plevel}.composite.{kind}.{psize}.{season}.{location}.{region}.{threshold}.{sdate}-{edate}.nc'
+        outpath='results/composites/msl_pressure_wind_{plevel}/era5.wind_msl.{plevel}.composite.{kind}.{psize}.{season}.{location}.{region}.{threshold}.{sdate}-{edate}.nc'
     params:
         clim_sdate = config['clim_date0'],
         clim_edate = config['clim_date1']
@@ -63,15 +63,16 @@ rule mean_sea_level_pressure_and_wind:
         winds=xr.Dataset()
         winds['u'] = wind_u['u']
         winds['v'] = wind_v['v']
-        windspeed['hws']=np.sqrt(wind_u['u']**2 + wind_v['v']**2)
-        windspeed.attrs['varName']='hws'
-        windspeed['hws'].attrs['units'] = 'm/s'
-        windspeed['hws'].attrs['long_name'] = 'wind speed'
+        # windspeed['hws']=np.sqrt(wind_u['u']**2 + wind_v['v']**2)
+        # windspeed.attrs['varName']='hws'
+        # windspeed['hws'].attrs['units'] = 'm/s'
+        # windspeed['hws'].attrs['long_name'] = 'wind speed'
         msl= xr.open_dataset(input.msl)
 
         if len(weak_years) == 0 or len(strong_years) == 0:
             comp = xr.Dataset()
             comp.attrs['years_composited']=0
         else:
-            comp = mslp_wind_composite(msl, wind_u, wind_v, weak_years, strong_years, )
+            comp = mslp_wind_composite(msl, wind_u, wind_v, weak_years, strong_years, wildcards.plevel, 
+            wildcards.season, wildcards.location, wildcards.kind)
         comp.to_netcdf(output.outpath)

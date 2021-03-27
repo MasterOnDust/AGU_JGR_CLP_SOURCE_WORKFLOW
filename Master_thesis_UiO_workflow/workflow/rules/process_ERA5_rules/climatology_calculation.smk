@@ -21,5 +21,7 @@ rule resample_seasonal:
     wildcard_constraints:
         season='DJF|MAM|JJA|SON'
     run:
-        ds=resample_seasonal(input.path, wildcards.season)
+        import xarray as xr
+        ds = xr.open_dataset(input.path)
+        ds=resample_seasonal(ds, wildcards.season)
         ds.to_netcdf(output.outpath)

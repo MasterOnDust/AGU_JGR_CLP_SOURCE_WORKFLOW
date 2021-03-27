@@ -8,7 +8,7 @@ rule calc_total_deposition:
         outpath=config['intermediate_results_models']+'/total_deposition/total_deposition.{location}.{psize}.monthly.{sdate}-{edate}.nc'
     
     run:
-        from thesis_toolbox.process_model_data.calc_totaldeposition import get_total_depostion
+        from thesis_toolbox.process_model_output.calc_totaldeposition import get_total_depostion
         import time
         
         wetdep=xr.open_dataset(input.wetdep_path)
@@ -44,7 +44,7 @@ rule source_contribution_source_region_timeseries:
         region='|'.join(config['source_regions'].keys()) + '|total'
         
     run:
-        from thesis_toolbox.process_model_data.process_source_contribution import create_timeseries
+        from thesis_toolbox.process_model_output.process_source_contribution import create_timeseries
         
         ds=xr.open_dataset(input.depo_data)
         if wildcards.region=='total':

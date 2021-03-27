@@ -6,7 +6,6 @@ DATA_FOLDER=config["intermediate_files"]
 AO=config['ao_output_path']
 rule eof_based_AO:
     input:
-        src='workflow/scripts/calc_AO.py',
         geoPot_data_anomaly=DATA_FOLDER+"/era5.1000hPa.GeopotHeight.{frequency}_anomaly.{sdate}-{edate}.nc"
     output:
         outpath=AO+"/era5.1000hPa.AO_EOF.{frequency}.{sdate}-{edate}.nc"

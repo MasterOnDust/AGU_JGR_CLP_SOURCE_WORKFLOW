@@ -8,8 +8,9 @@ rule temperature_gradient:
         n_bins=config['n_bins_temperature_gradient']
     threads: 1
     run:
-        from scripts.calculate_temperature_gradient import calculate_temperature_gradient
-        temp_ds = xr.open_dataset(input.temp_path)
+        from thesis_toolbox.calc_indicies.calculate_temperature_gradient import calculate_temperature_gradient
+        from thesis_toolbox.process_era5 import read_data
+        temp_ds = read_data(input.temp_path)
         temp_ds = calculate_temperature_gradient(temp_ds,n_latitude_bins=params.n_bins)
         temp_ds.attrs['title']='Temperature gradient East Asia'
         temp_ds.attrs['source']='ERA5 reanalysis'

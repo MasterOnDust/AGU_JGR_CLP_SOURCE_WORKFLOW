@@ -13,7 +13,6 @@ DATA_FOLDER=config["intermediate_files"]
 NAO=config['nao_output_path']
 rule eof_based_NAO:
     input:
-        src='workflow/scripts/calc_NAO.py',
         mslp_data_anomaly=DATA_FOLDER+"/era5.single_level.mean_sea_level_pressure.{frequency}_anomaly.{sdate}-{edate}.nc"
     output:
         outpath=NAO+"/era5.single_level.NAO_EOF.{frequency}.{sdate}-{edate}.nc"
@@ -31,7 +30,6 @@ rule eof_based_NAO:
         
 rule calculate_NAO_station:
     input:
-        src='workflow/scripts/calc_NAO.py',
         mslp_data_anomaly=DATA_FOLDER+"/era5.single_level.mean_sea_level_pressure.{frequency}_anomaly.{sdate}-{edate}.nc"
     output:
         outpath=NAO+"/era5.single_level.NAO_station.{frequency}.{sdate}-{edate}.nc"
