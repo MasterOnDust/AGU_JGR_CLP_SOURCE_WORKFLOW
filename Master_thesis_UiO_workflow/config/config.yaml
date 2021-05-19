@@ -14,10 +14,11 @@ Precipitation: "results/precip"
 
 
 flexdust_path: "../../FLEXDUST_emission_flux"
-source_contrib_path: "../../flexpart/FLEXPART_spring/source_contribution_final"
+source_contrib_path: "../../flexpart/production_run/source_contribution"
 flexdust_results: "results/model_results/flexdust"
 intermediate_results_models: "results/model_results/intermediate_results"
 source_contrib_results: "results/model_results/source_contrib"
+flexpart_output : "../../flexpart/production_run"
 # Variables name used to constrain the wildcards
 
 variables:
@@ -29,6 +30,7 @@ variables:
   - u_component_of_wind
   - total_precipitation
   - v_component_of_wind
+  - snow_cover
 
 # Set first and last year to download.
 sdate: 1979
@@ -105,3 +107,8 @@ source_regions:
 
 # Number of latitude bins used in temperature gradient calculation
 n_bins_temperature_gradient: 17
+
+
+# Plotting config:
+
+add_fig_title: True
