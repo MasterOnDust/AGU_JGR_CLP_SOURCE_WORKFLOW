@@ -13,9 +13,8 @@
 
 rule resample:
     input:
-        script='workflow/scripts/emission_flux_series.py',
         paths=expand(config['flexdust_path']+'/FLEXDUST1999_2019/{year}/FLEXDUST_{year}0301_{year}0531.nc', 
-                    year=[year for year in range(config['sdate'], config['edate']+1)])
+                    year=[year for year in range(config['m_sdate'], config['m_edate']+1)])
     
     output:
         outpath=config['intermediate_results_models']+'/emission_flux.china.{frequency}.{sdate}-{edate}.nc'
@@ -28,6 +27,7 @@ rule resample:
             freq='m'
         else:
             freq=wildcards.frequency
+       
         ds = resample_emission_flux(input.paths, config['domain']['lon0'],config['domain']['lon1'],
                                    config['domain']['lat0'], config['domain']['lat1'],
                                    frequency=freq)
@@ -41,12 +41,12 @@ rule source_region_timeseries:
     run:
         from thesis_toolbox.process_model_output.emission_flux_series import resample_emission_flux, create_timeseries
         if wildcards.region=='total':
+            
             ts=create_timeseries(input.path)
         else:
             region=config['source_regions'][wildcards.region]
             ts=create_timeseries(input.path,region['lon0'], region['lon1'], region['lat0'], region['lat1'])
             ts=xr.decode_cf(ts)
-#             from IPython import embed; embed()
             t0=str(ts.time[0].dt.strftime('%Y').values)
             t1=str(ts.time[-1].dt.strftime('%Y').values)
             ts.attrs['title']='FLEXDUST simulated dust emissions {}-{}, '.format(t0,t1) + wildcards.region
