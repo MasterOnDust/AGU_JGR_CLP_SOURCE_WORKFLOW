@@ -13,7 +13,7 @@
 
 rule resample:
     input:
-        paths=expand(config['flexdust_path']+'/FLEXDUST1999_2019/{year}/FLEXDUST_{year}0301_{year}0531.nc', 
+        paths=expand(config['flexdust_path']+'/{year}/FLEXDUST_{year}0301_{year}0531.nc', 
                     year=[year for year in range(config['m_sdate'], config['m_edate']+1)])
     
     output:

@@ -8,7 +8,7 @@ rule windspeed_geopot_wind_composite:
         geopot=config['intermediate_files'] + '/era5.{plevel}.GeopotHeight.{season}.'+ str(SDATE)+'-'+str(EDATE)+'.nc',
         timeseries='results/model_results/time_series/{kind}/{kind}.{location}.{region}.{psize}.MAM.{sdate}-{edate}.nc'
     output:
-        outpath='results/composites/windspeed_geopot_{plevel}/era5.wind_geopot.{plevel}.composite.{kind}.{psize}.{season}.{location}.{region}.{threshold}.{sdate}-{edate}.nc'
+        outpath='results/composites/windspeed_geopot_{plevel}/era5.wind_geopot.{plevel}.composite.{kind}.{psize}.{season}.{location}.{region}.{c}_{criterion}.{sdate}-{edate}.nc'
     params:
         clim_sdate = config['clim_date0'],
         clim_edate = config['clim_date1']
@@ -18,7 +18,7 @@ rule windspeed_geopot_wind_composite:
         from thesis_toolbox.composites.create_composites import select_years_to_composite
         import numpy as np
         timeseries = xr.open_dataset(input.timeseries)
-        weak_years, strong_years = select_years_to_composite(timeseries[timeseries.varName],wildcards.threshold)
+        weak_years, strong_years = select_years_to_composite(timeseries[timeseries.varName],int(wildcards.c),wildcards.criterion)
         wind_u = xr.open_dataset(input.u_wind)
         wind_v = xr.open_dataset(input.v_wind)
         windspeed = xr.Dataset()
@@ -46,7 +46,7 @@ rule mean_sea_level_pressure_and_wind:
         msl=config['intermediate_files'] + '/era5.single_level.mean_sea_level_pressure.{season}.'+ str(SDATE)+'-'+str(EDATE)+'.nc',
         timeseries='results/model_results/time_series/{kind}/{kind}.{location}.{region}.{psize}.MAM.{sdate}-{edate}.nc'
     output:
-        outpath='results/composites/msl_pressure_wind_{plevel}/era5.wind_msl.{plevel}.composite.{kind}.{psize}.{season}.{location}.{region}.{threshold}.{sdate}-{edate}.nc'
+        outpath='results/composites/msl_pressure_wind_{plevel}/era5.wind_msl.{plevel}.composite.{kind}.{psize}.{season}.{location}.{region}.{c}_{criterion}.{sdate}-{edate}.nc'
     params:
         clim_sdate = config['clim_date0'],
         clim_edate = config['clim_date1']
@@ -56,7 +56,7 @@ rule mean_sea_level_pressure_and_wind:
         from thesis_toolbox.composites.create_composites import select_years_to_composite
         import numpy as np
         timeseries = xr.open_dataset(input.timeseries)
-        weak_years, strong_years = select_years_to_composite(timeseries[timeseries.varName],wildcards.threshold)
+        weak_years, strong_years = select_years_to_composite(timeseries[timeseries.varName],int(wildcards.c),wildcards.criterion)
         wind_u = xr.open_dataset(input.u_wind)
         wind_v = xr.open_dataset(input.v_wind)
         windspeed = xr.Dataset()
