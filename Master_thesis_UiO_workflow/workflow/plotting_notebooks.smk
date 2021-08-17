@@ -3,7 +3,6 @@ Run all the notebooks for generating figures and such
 
 """
 
-
 rule plot_source_contrib_composite:
     input:
         expand('results/model_results/time_series/{kind}/{kind}.{loc}.total.{psize}.MAM.{sdate}-{edate}.nc',
@@ -137,3 +136,15 @@ rule plot_500hPa_composite:
     
     notebook:
         'notebooks/Depostion_500hPa_composte.py.ipynb'
+
+rule plot_all:
+    input:
+        rules.plot_source_contrib_composite.output,
+        rules.plot_ao_mo_composite.output,
+        rules.plot_circulation_clim.output,
+        rules.plot_850hPa_composite.output,
+        rules.plot_dust_loading_trajectories.output,
+        rules.plot_source_contribution.output,
+        rules.plot_500hPa_composite.output,
+        rules.plot_weak_strong_dust_trajecs.output
+        

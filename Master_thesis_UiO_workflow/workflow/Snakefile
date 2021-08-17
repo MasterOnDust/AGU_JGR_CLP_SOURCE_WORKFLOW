@@ -34,7 +34,6 @@ wildcard_constraints:
 include: "rules/process_ERA5_rules/download.smk"
 include: "rules/process_ERA5_rules/calc_nao.smk"
 include: "rules/process_ERA5_rules/utils.smk"
-include: "rules/plotting.smk"
 include: "rules/process_ERA5_rules/calculate_means.smk"
 include: "rules/process_ERA5_rules/climatology_calculation.smk"
 include: "rules/process_ERA5_rules/calculate_anomalies.smk"
@@ -47,10 +46,11 @@ include: 'rules/process_models_data_rules/process_source_contribution.smk'
 include: 'rules/process_models_data_rules/calc_total_deposition.smk'
 include: 'rules/create_composite.smk'
 include: 'rules/process_ERA5_rules/calc_temperature_gradient.smk'
-include: 'rules/plot_composites.smk'
 include: 'rules/create_timeseries_table.smk'
 include: 'rules/download_orography.smk'
 include: 'rules/process_models_data_rules/trajectory_clustering.smk'
+include: 'plotting_notebooks.smk'
+include: 'rules/get_dust_loading_trajectories.smk'
 
 SDATE=config['sdate']
 EDATE=config['edate']
@@ -59,15 +59,22 @@ MODEL_EDATE=config['m_edate']
 SEASONS=['DJF','MAM']
 rule all:
     input:
-        config['nao_output_path']+"/era5.single_level.NAO_station.DJF.{}-{}.nc".format(SDATE,EDATE),
-        config['nao_output_path']+"/era5.single_level.NAO_EOF.DJF.{}-{}.nc".format(SDATE,EDATE),
-        config['EAWMI_path']+"/era5.single_level.EAWM_MO.DJF.{}-{}.nc".format(SDATE,EDATE),
-        config['EAWMI_path']+"/era5.single_level.U300hPa_EAWM.DJF.{}-{}.nc".format(SDATE,EDATE),
-        config['ao_output_path']+"/era5.1000hPa.AO_EOF.DJF.{}-{}.nc".format(SDATE,EDATE),
-        config['APVI_index_outpath']+"/era5.500hPa.APVI_index.DJF.{}-{}.nc".format(SDATE,EDATE),
-        expand(config['Precipitation'] + '/era5.single_level.total_precipitation.{loc}.MAM.{S}-{E}.csv', 
-               S =SDATE,E=EDATE, loc=config['receptors'].keys()),
-        config['flexdust_results']+'/emission_flux.time_series.taklamakan.MAM.1999-2019.nc'
+        'results/timeseries_table.csv',
+        config['flexdust_results']+'/emission_flux.time_series.taklamakan.MAM.1999-2019.nc',
+        expand('results/composites/windspeed_geopot_500hPa/era5.wind_geopot.500hPa.composite.{kind}.{psize}.{season}.{location}.{region}.4_rank.1999-2019.nc', 
+               kind=['total_deposition'], psize=['2micron','20micron'], 
+               location=['SACOL','LINGTAI','BADOE','SHAPOTOU','YINCHUAN', 'LANTIAN','LUOCHUAN'],
+              region=['total'], season=['DJF','MAM']),
+        expand('results/composites/msl_pressure_wind_850hPa/era5.wind_msl.850hPa.composite.{kind}.{psize}.{season}.{location}.{region}.4_rank.1999-2019.nc', 
+               kind=['total_deposition'], psize=['2micron','20micron'], 
+               location=['SACOL','LINGTAI','BADOE','SHAPOTOU','YINCHUAN', 'LANTIAN','LUOCHUAN'],std=['05-std','1-std'],
+              region=['total'], season=['DJF','MAM']),
+        expand('results/composites/windspeed_geopot_200hPa/era5.wind_geopot.200hPa.composite.{kind}.{psize}.{season}.{location}.{region}.4_rank.1999-2019.nc', 
+               kind=['total_deposition'], psize=['2micron','20micron'], 
+               location=['SACOL','LINGTAI','BADOE','SHAPOTOU','YINCHUAN', 'LANTIAN','LUOCHUAN'],
+              region=['total'], season=['DJF','MAM'])
+
+
 
 rule calculate_correlations_receptor:
     input:
@@ -86,13 +93,13 @@ rule make_deposition:
 
 rule make_500_hPa_composite:
     input:
-        expand('results/composites/windspeed_geopot_500hPa/era5.wind_geopot.500hPa.composite.{kind}.{psize}.{season}.{location}.{region}.1-std.1999-2019.nc', 
+        expand('results/composites/windspeed_geopot_500hPa/era5.wind_geopot.500hPa.composite.{kind}.{psize}.{season}.{location}.{region}.4_rank.1999-2019.nc', 
                kind=['total_deposition'], psize=['2micron','20micron'], 
                location=['SACOL','LINGTAI','BADOE','SHAPOTOU','YINCHUAN', 'LANTIAN','LUOCHUAN'],
               region=['total'], season=['DJF','MAM'])
 rule make_850_wind_and_mslp_composite:
     input:
-        expand('results/composites/msl_pressure_wind_850hPa/era5.wind_msl.850hPa.composite.{kind}.{psize}.{season}.{location}.{region}.{std}.1999-2019.nc', 
+        expand('results/composites/msl_pressure_wind_850hPa/era5.wind_msl.850hPa.composite.{kind}.{psize}.{season}.{location}.{region}.4_rank.1999-2019.nc', 
                kind=['total_deposition'], psize=['2micron','20micron'], 
                location=['SACOL','LINGTAI','BADOE','SHAPOTOU','YINCHUAN', 'LANTIAN','LUOCHUAN'],std=['05-std','1-std'],
               region=['total'], season=['DJF','MAM'])
@@ -100,7 +107,7 @@ rule make_850_wind_and_mslp_composite:
         
 rule make_200_wind_and_geopot_composite:
     input:
-        expand('results/composites/windspeed_geopot_200hPa/era5.wind_geopot.200hPa.composite.{kind}.{psize}.{season}.{location}.{region}.1-std.1999-2019.nc', 
+        expand('results/composites/windspeed_geopot_200hPa/era5.wind_geopot.200hPa.composite.{kind}.{psize}.{season}.{location}.{region}.4_rank.1999-2019.nc', 
                kind=['total_deposition'], psize=['2micron','20micron'], 
                location=['SACOL','LINGTAI','BADOE','SHAPOTOU','YINCHUAN', 'LANTIAN','LUOCHUAN'],
               region=['total'], season=['DJF','MAM'])

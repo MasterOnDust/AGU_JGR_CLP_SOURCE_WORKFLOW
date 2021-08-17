@@ -12,13 +12,12 @@ ao_output_path: "results/ao"
 APVI_index_outpath: "results/apv"
 Precipitation: "results/precip"
 
-
-flexdust_path: "../../FLEXDUST_emission_flux"
+flexpart_path: /projects/NS2806K/ovewh/tracing_the_winds/flexpart/production_run
+flexdust_path: "../../FLEXDUST_emission_flux/FLEXDUST1999_2019"
 source_contrib_path: "../../flexpart/production_run/source_contribution"
 flexdust_results: "results/model_results/flexdust"
 intermediate_results_models: "results/model_results/intermediate_results"
 source_contrib_results: "results/model_results/source_contrib"
-flexpart_output : "../../flexpart/production_run"
 # Variables name used to constrain the wildcards
 
 variables:
@@ -79,31 +78,31 @@ receptors:
         lon: 35.71000
 
 source_regions:
-    taklamakan:
-        lon0: 75
-        lon1: 90
-        lat0: 36
-        lat1: 42
-    north_west:
-        lon0: 100
-        lon1: 110
-        lat0: 37
-        lat1: 42
-    mongolia:
-        lon0: 95
-        lon1: 110
-        lat0: 43
-        lat1: 50
-    jungger_basin:
-        lon0: 80
-        lon1: 90
-        lat0: 43
-        lat1: 47
-    qaidam_basin:
-        lon0: 90
-        lon1: 100
-        lat0: 35
-        lat1: 40
+        taklamakan:
+            lon0: 75
+            lon1: 90
+            lat0: 36
+            lat1: 42
+        north_west:
+            lon0: 100
+            lon1: 110
+            lat0: 37
+            lat1: 42
+        mongolia:
+            lon0: 95
+            lon1: 110
+            lat0: 43
+            lat1: 50
+        jungger_basin:
+            lon0: 80
+            lon1: 90
+            lat0: 43
+            lat1: 47
+        qaidam_basin:
+            lon0: 90
+            lon1: 100
+            lat0: 35
+            lat1: 40
 
 # Number of latitude bins used in temperature gradient calculation
 n_bins_temperature_gradient: 17
