@@ -137,6 +137,14 @@ rule plot_500hPa_composite:
     notebook:
         'notebooks/Depostion_500hPa_composte.py.ipynb'
 
+rule plot_correlation_matrix:
+    input:
+        'results/timeseries_table.csv'
+    output:
+        outpath='figs/correlation_matrix.pdf'
+    notebook:
+        'notebooks/Plot_correlation_matrix.py.ipynb'
+
 rule plot_all:
     input:
         rules.plot_source_contrib_composite.output,
@@ -146,5 +154,6 @@ rule plot_all:
         rules.plot_dust_loading_trajectories.output,
         rules.plot_source_contribution.output,
         rules.plot_500hPa_composite.output,
-        rules.plot_weak_strong_dust_trajecs.output
+        rules.plot_weak_strong_dust_trajecs.output,
+        rules.plot_correlation_matrix.output
         
