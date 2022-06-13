@@ -26,7 +26,7 @@ import xarray as xr
 wildcard_constraints:
     season='DJF|MAM',
     fig_file_extention='png|pdf',
-    location='|'.join(config['receptors'].keys()),
+    location='|'.join(config['receptors'].keys())+'|BAODE',
     region='|'.join(config['source_regions'].keys())+'|total',
     comp_type='std_anom|anom|std|comp_only',
     threshold='05-std|1-std|2-std'
@@ -45,12 +45,14 @@ include: 'rules/process_models_data_rules/process_emission_field.smk'
 include: 'rules/process_models_data_rules/process_source_contribution.smk'
 include: 'rules/process_models_data_rules/calc_total_deposition.smk'
 include: 'rules/create_composite.smk'
+include: 'rules/create_composite_MERRA2.smk'
 include: 'rules/process_ERA5_rules/calc_temperature_gradient.smk'
 include: 'rules/create_timeseries_table.smk'
 include: 'rules/download_orography.smk'
 include: 'rules/process_models_data_rules/trajectory_clustering.smk'
 include: 'plotting_notebooks.smk'
 include: 'rules/get_dust_loading_trajectories.smk'
+include: 'plot_agu_figures.smk'
 
 SDATE=config['sdate']
 EDATE=config['edate']
@@ -87,27 +89,6 @@ rule make_deposition:
     input:
         expand('results/model_results/time_series/{kind}/{kind}.{location}.{region}.{size}.MAM.{sdate}-{edate}.nc',
             location=['SACOL','LINGTAI','BADOE','SHAPOTOU','YINCHUAN', 'LANTIAN','LUOCHUAN'], 
-              size=['2micron','20micron'], sdate=MODEL_SDATE,edate=MODEL_EDATE,kind=['total_deposition', 'wetdep','drydep'],
+              size=['2micron','20micron'], sdate=MODEL_SDATE,edate=MODEL_EDATE,kind=['drydep'],
               region=['total'])
 
-
-rule make_500_hPa_composite:
-    input:
-        expand('results/composites/windspeed_geopot_500hPa/era5.wind_geopot.500hPa.composite.{kind}.{psize}.{season}.{location}.{region}.4_rank.1999-2019.nc', 
-               kind=['total_deposition'], psize=['2micron','20micron'], 
-               location=['SACOL','LINGTAI','BADOE','SHAPOTOU','YINCHUAN', 'LANTIAN','LUOCHUAN'],
-              region=['total'], season=['DJF','MAM'])
-rule make_850_wind_and_mslp_composite:
-    input:
-        expand('results/composites/msl_pressure_wind_850hPa/era5.wind_msl.850hPa.composite.{kind}.{psize}.{season}.{location}.{region}.4_rank.1999-2019.nc', 
-               kind=['total_deposition'], psize=['2micron','20micron'], 
-               location=['SACOL','LINGTAI','BADOE','SHAPOTOU','YINCHUAN', 'LANTIAN','LUOCHUAN'],std=['05-std','1-std'],
-              region=['total'], season=['DJF','MAM'])
-              
-        
-rule make_200_wind_and_geopot_composite:
-    input:
-        expand('results/composites/windspeed_geopot_200hPa/era5.wind_geopot.200hPa.composite.{kind}.{psize}.{season}.{location}.{region}.4_rank.1999-2019.nc', 
-               kind=['total_deposition'], psize=['2micron','20micron'], 
-               location=['SACOL','LINGTAI','BADOE','SHAPOTOU','YINCHUAN', 'LANTIAN','LUOCHUAN'],
-              region=['total'], season=['DJF','MAM'])

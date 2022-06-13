@@ -27,7 +27,7 @@ rule resample_source_contrib:
         kind='drydep|wetdep'
     threads: 1
     run: 
-        from DUST.utils.resample import resample_monthly, concatenate_monthly
+        from dust.utils.resample import resample_monthly, concatenate_monthly
         import time
         paths=input.paths
         dsets_list=[resample_monthly(xr.open_dataset(path)) for path in paths]
@@ -66,7 +66,7 @@ rule process_flexpart_output:
         y0 = config['domain']['lat0'],
         y1 = config['domain']['lat1']
     run:
-        import DUST
+        import dust
         import xarray as xr 
         import os
         from DUST.process_data_dust import process_per_pointspec, process_per_timestep, create_output
@@ -91,3 +91,45 @@ rule process_flexpart_output:
             print('writing to {}'.format(outFile_name))
             out_ds.to_netcdf(outFile_name, encoding={f_name:encoding, 'surface_sensitivity':encoding})
 
+
+rule create_deposition_timeseries:
+    input:
+        paths= lambda wildcards: get_paths(config['source_contrib_path'], wildcards.year, wildcards.year,
+                                           wildcards.kind, wildcards.location, wildcards.size)
+        
+    output:
+        outpath=config['intermediate_results_models']+'/timeseries/{kind}/{kind}.{location}.{size}.{freq}.{year}.csv'
+    wildcard_constraints:
+        location='|'.join(config['receptors'].keys()),
+        size='2micron|20micron',
+        kind='drydep|wetdep',
+        freq='3H|Day|Weekly'
+    run:
+        import xarray as xr
+        paths = input.paths
+        if wildcards.freq=='Day':
+            freq='D'
+        elif wildcards.freq=='Weekly':
+            freq='W'
+        else:
+            freq=wildcards.freq
+        def pre_process(dset):
+            dset = dset.drop_vars('surface_sensitivity')
+            dset = dset.drop_dims('numpoint')
+            with xr.set_options(keep_attrs=True):
+                if dset.ind_receptor==4 or dset.ind_receptor==3:
+                    # Depostion is accumulative
+                    dset = dset.sum(dim=['btime','lon','lat'])
+                else:
+                    # Concentration is not accumulative
+                    dset = dset.sum(dim=['btime','lon','lat'])
+            return dset
+        
+        ds = xr.open_mfdataset(paths,concat_dim=['time'], parallel=True, 
+                chunks={'time':40}, preprocess=pre_process)
+        if ds.ind_receptor==4 or ds.ind_receptor==3:
+            da_dep = ds[wildcards.kind].resample(time=freq).sum()
+        else:
+            da_dep = ds[wildcards.kind].resample(time=freq).mean()
+        df = da_dep.to_pandas()
+        df.to_csv(output.outpath)

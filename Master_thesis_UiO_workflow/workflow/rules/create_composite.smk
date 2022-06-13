@@ -63,10 +63,6 @@ rule mean_sea_level_pressure_and_wind:
         winds=xr.Dataset()
         winds['u'] = wind_u['u']
         winds['v'] = wind_v['v']
-        # windspeed['hws']=np.sqrt(wind_u['u']**2 + wind_v['v']**2)
-        # windspeed.attrs['varName']='hws'
-        # windspeed['hws'].attrs['units'] = 'm/s'
-        # windspeed['hws'].attrs['long_name'] = 'wind speed'
         msl= xr.open_dataset(input.msl)
 
         if len(weak_years) == 0 or len(strong_years) == 0:

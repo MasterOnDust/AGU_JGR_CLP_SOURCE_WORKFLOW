@@ -145,7 +145,24 @@ rule plot_correlation_matrix:
     notebook:
         'notebooks/Plot_correlation_matrix.py.ipynb'
 
-rule plot_all:
+rule plot_emission_eof_analysis:
+    input:
+        'results/model_results/intermediate_results/emission_flux.china.MAM.1999-2019.nc',
+        data850hpa= expand(config['intermediate_files']+'/era5.850hPa.{variable}.{season}.1979-2019.nc',
+                variable = ['u_component_of_wind', 'v_component_of_wind'],
+                season=['DJF','MAM']),
+        data_single_level=expand(config['intermediate_files']+'/era5.single_level.{variable}.{season}.1979-2019.nc',
+                variable = ['mean_sea_level_pressure'],
+                season=['DJF','MAM'])
+    output:
+        # outpath='figs/emissions_eof_analysis.pdf'
+        # composite_path_djf='figs/emissions_composite_djf.pdf',
+        # composite_path_mam='figs/emissions_composite_mam.pdf'
+    notebook:
+        'notebooks/EOF_analysis.py.ipynb'
+
+
+rule plot_all_thesis:
     input:
         rules.plot_source_contrib_composite.output,
         rules.plot_ao_mo_composite.output,

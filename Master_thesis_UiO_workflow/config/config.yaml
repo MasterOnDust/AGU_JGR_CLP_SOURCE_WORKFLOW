@@ -18,6 +18,7 @@ source_contrib_path: "../../flexpart/production_run/source_contribution"
 flexdust_results: "results/model_results/flexdust"
 intermediate_results_models: "results/model_results/intermediate_results"
 source_contrib_results: "results/model_results/source_contrib"
+MERRA2_path : "../../MERRA2"
 # Variables name used to constrain the wildcards
 
 variables:
@@ -37,7 +38,7 @@ edate: 2019
 
 # Set first and last year of FLEXPART/FLEXDUST model output
 
-m_sdate: 1999
+m_sdate: 2011
 m_edate: 2019
 
 # Composite climatological period
