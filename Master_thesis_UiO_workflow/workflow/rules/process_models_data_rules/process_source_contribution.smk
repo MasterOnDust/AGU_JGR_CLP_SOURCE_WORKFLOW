@@ -69,9 +69,9 @@ rule process_flexpart_output:
         import dust
         import xarray as xr 
         import os
-        from DUST.process_data_dust import process_per_pointspec, process_per_timestep, create_output
+        from dust.process_data_dust import process_per_pointspec, process_per_timestep, create_output
         # print(input.flexdust_path)
-        flexdust_ds = DUST.read_flexdust_output(input.flexdust_path+'/')['dset']
+        flexdust_ds = dust.read_flexdust_output(input.flexdust_path+'/')['dset']
         flexdust_ds = flexdust_ds.sel(lon=slice(params.x0,params.x1), lat=slice(params.y0,params.y1))
         outpath = config['source_contrib_path']+f'/{wildcards.kind}/{wildcards.size}/{wildcards.year}'
         for fp_path in input.flexpart_paths:

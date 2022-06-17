@@ -1,4 +1,3 @@
-from IPython import embed
 
 def determine_path(frequency):
     if frequency =='monthly':

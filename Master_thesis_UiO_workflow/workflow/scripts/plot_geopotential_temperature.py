@@ -4,7 +4,6 @@ import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
 import xarray as xr
 
-from IPython import embed
 
 from plot_ERA5 import plot_contour, plot_contourf,read_data, draw_map
 
@@ -23,7 +22,6 @@ if __name__ == "__main__":
     title=args.title
     file_name=args.filename
     pole_plot=args.NH_polar_plot
-    embed()
     t_dset=read_data(temperature)
     geop_deset=read_data(geopotential_height)
     

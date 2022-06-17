@@ -45,7 +45,6 @@ rule source_contribution_source_region_timeseries:
         
     run:
         from thesis_toolbox.process_model_output.process_source_contribution import create_timeseries
-        
         ds=xr.open_dataset(input.depo_data)
         if wildcards.region=='total':
             ds = create_timeseries(ds)
@@ -54,4 +53,5 @@ rule source_contribution_source_region_timeseries:
             ds=create_timeseries(ds,region['lon0'], region['lon1'], region['lat0'], region['lat1'])
         
         ds.attrs['title']='FLEXDUST/FLEXPART simulated dust deposition' + wildcards.region
+        
         ds.to_netcdf(output.outpath)
