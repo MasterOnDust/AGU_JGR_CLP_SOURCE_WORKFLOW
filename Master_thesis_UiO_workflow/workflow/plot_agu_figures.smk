@@ -90,6 +90,7 @@ rule plot_dust_loading_trajectories_agu:
     output:
         path_map = 'figs/agu/average_dust_transport_trajectories.pdf',
         path_vertical_profile = 'figs/agu/average_dust_transport_height.pdf'
+    
     notebook:
         'notebooks/AGU_paper_figures/Dust_loading_trajectory_analysis.py.ipynb'
 
@@ -101,25 +102,12 @@ rule create_deposition_histogram:
 
 rule plot_all_agu:
     input:
-        'figs/agu/Composite_maps/mslp_850hPa_drydep_20micron_DJF.pdf',
-        'figs/agu/Composite_maps/mslp_850hPa_drydep_2micron_DJF.pdf',
-        'figs/agu/Composite_maps/mslp_850hPa_drydep_20micron_MAM.pdf',
-        'figs/agu/Composite_maps/mslp_850hPa_drydep_2micron_MAM.pdf',
-        'figs/agu/Composite_maps/mslp_850hPa_total_deposition_20micron_DJF.pdf',
-        'figs/agu/Composite_maps/mslp_850hPa_total_deposition_2micron_DJF.pdf',
-        'figs/agu/Composite_maps/mslp_850hPa_total_deposition_20micron_MAM.pdf',
-        'figs/agu/Composite_maps/mslp_850hPa_total_deposition_2micron_MAM.pdf',
         rules.plot_source_contribution_agu.output,
         rules.plot_source_contribution_drydep_agu.output,
         rules.plot_source_contribution_wetdep_agu.output,
-        'figs/agu/Composite_maps/geopot_ws_500hPa_total_deposition_20micron_DJF.pdf',
-        'figs/agu/Composite_maps/geopot_ws_500hPa_total_deposition_2micron_DJF.pdf',
-        'figs/agu/Composite_maps/geopot_ws_500hPa_total_deposition_20micron_MAM.pdf',
-        'figs/agu/Composite_maps/geopot_ws_500hPa_total_deposition_2micron_MAM.pdf',
-        'figs/agu/Composite_maps/geopot_ws_500hPa_drydep_20micron_DJF.pdf',
-        'figs/agu/Composite_maps/geopot_ws_500hPa_drydep_2micron_DJF.pdf',
-        'figs/agu/Composite_maps/geopot_ws_500hPa_drydep_20micron_MAM.pdf',
-        'figs/agu/Composite_maps/geopot_ws_500hPa_drydep_2micron_MAM.pdf',
         rules.plot_correlation_matrix_agu.output,
-        rules.plot_dust_loading_trajectories_agu.output
+        expand(rules.plot_850hPa_composite_agu.output, kind=['drydep','wetdep','total_deposition']),
+        expand(rules.plot_500hPa_composite_agu.output, kind=['drydep','wetdep','total_deposition']),
+ 
+
         
