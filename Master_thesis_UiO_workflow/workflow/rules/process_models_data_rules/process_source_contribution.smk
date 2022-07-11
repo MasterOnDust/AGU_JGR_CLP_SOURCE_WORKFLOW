@@ -126,7 +126,7 @@ rule create_deposition_timeseries:
             return dset
         
         ds = xr.open_mfdataset(paths,concat_dim=['time'], parallel=True, 
-                chunks={'time':40}, preprocess=pre_process)
+                chunks={'time':40}, combine='nested',preprocess=pre_process)
         if ds.ind_receptor==4 or ds.ind_receptor==3:
             da_dep = ds[wildcards.kind].resample(time=freq).sum()
         else:
