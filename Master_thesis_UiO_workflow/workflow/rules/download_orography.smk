@@ -11,7 +11,7 @@ rule download_orography:
             {
                 'product_type': 'reanalysis',
                 'format': 'netcdf',
-                'variable': 'orography',
+                'variable': 'geopotential',
                 'year': '2019',
                 'month': '03',
                 'day': '10',
