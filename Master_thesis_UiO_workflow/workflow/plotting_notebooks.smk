@@ -153,11 +153,14 @@ rule plot_emission_eof_analysis:
                 season=['DJF','MAM']),
         data_single_level=expand(config['intermediate_files']+'/era5.single_level.{variable}.{season}.1979-2019.nc',
                 variable = ['mean_sea_level_pressure'],
-                season=['DJF','MAM'])
+                season=['DJF','MAM']),
+        oro = 'downloads/ERA5_orography.nc'
     output:
-        # outpath='figs/emissions_eof_analysis.pdf'
-        # composite_path_djf='figs/emissions_composite_djf.pdf',
-        # composite_path_mam='figs/emissions_composite_mam.pdf'
+        outpath='figs/eofs/emissions_eof_analysis.pdf',
+        composite_path_djf='figs/eofs/emissions_composite_djf.pdf',
+        composite_path_mam='figs/eofs/emissions_composite_mam.pdf',
+        elow_plot = 'figs/eofs/eof_pca_elow_plot.png'
+
     notebook:
         'notebooks/EOF_analysis.py.ipynb'
 
