@@ -97,8 +97,37 @@ rule plot_dust_loading_trajectories_agu:
 rule create_deposition_histogram:
     input:
         expand('results/model_results/intermediate_results/timeseries/{kind}/{kind}.{loc}.{psize}.Day.{year}.csv',
-        kind=['drydep','wetdep'],loc=['SACOL','LINGTAI','BADOE','SHAPOTOU','LANTIAN', 'LUOCHUAN'],psize=['2micron','20micron'], 
-        year=[str(y) for y in range(1999,2020)])
+        loc=['SACOL','LINGTAI','BADOE','SHAPOTOU','LANTIAN', 'LUOCHUAN'], 
+        year=[str(y) for y in range(1999,2020)], allow_missing=True)
+    output:
+        outpath = 'figs/agu/{kind}_{psize}_deposition_histogram.pdf'
+
+    notebook:
+        'notebooks/AGU_paper_figures/Create_deposition_histogram.ipynb'
+
+rule plot_combo_plotv2:
+    input:
+        expand('results/model_results/time_series/{kind}/{kind}.{loc}.total.{psize}.MAM.{sdate}-{edate}.nc',
+            loc=LOCS_AGU_PAPER,
+            kind=['total_deposition','wetdep'],sdate=config['m_sdate'], edate=config['m_edate'],
+            allow_missing=True)
+    output:
+        combopath='figs/agu/fraction_source_contrib_combo_v2_{psize}.png'
+    notebook:
+        'notebooks/AGU_paper_figures/Dust_deposition_source_contribution_drydep_wetdep_combo_v2.py.ipynb'
+
+rule plot_combo_plotv3:
+    input:
+        expand('results/model_results/time_series/{kind}/{kind}.{loc}.total.{psize}.MAM.{sdate}-{edate}.nc',
+            loc=LOCS_AGU_PAPER,
+            kind=['total_deposition','wetdep'],sdate=config['m_sdate'], edate=config['m_edate'],
+            psize=['2micron','20micron'])
+    output:
+        combopath='figs/agu/fraction_source_contrib_combo_v3.png'
+    notebook:
+        'notebooks/AGU_paper_figures/Dust_deposition_source_contribution_drydep_wetdep_combo_v3.py.ipynb'
+
+
 
 rule plot_all_agu:
     input:
@@ -106,6 +135,7 @@ rule plot_all_agu:
         rules.plot_source_contribution_drydep_agu.output,
         rules.plot_source_contribution_wetdep_agu.output,
         rules.plot_correlation_matrix_agu.output,
+        expand(rules.create_deposition_histogram.output, kind=['wetdep','drydep'],psize=['20micron','2micron']),
         expand(rules.plot_850hPa_composite_agu.output, kind=['drydep','wetdep','total_deposition']),
         expand(rules.plot_500hPa_composite_agu.output, kind=['drydep','wetdep','total_deposition']),
  
