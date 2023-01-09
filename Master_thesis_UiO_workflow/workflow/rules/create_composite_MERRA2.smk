@@ -48,7 +48,8 @@ rule windspeed_geopot_wind_composite_merra:
             lon,lat = locs.loc['BADOE']
         else:
             lon,lat = locs.loc[wildcards.location]
-        ds = xr.open_mfdataset(input.MERRA2_path,concat_dim=['time'])
+        paths = sorted(input.MERRA2_path)
+        ds = xr.open_mfdataset(paths,concat_dim=['time'], combine='nested')
         if wildcards.size_bin=='clay':
             sizebin = ['002']
         elif wildcards.size_bin=='fine-silt':
@@ -83,8 +84,9 @@ rule windspeed_geopot_wind_composite_merra:
             comp = geopot_wind_composite(geopot, wind_u, wind_v, weak_years,strong_years,wildcards.plevel, 
                                     wildcards.season, wildcards.location,wildcards.kind)
         else:
-            ds = xr.open_mfdataset(input.paths,
-                       concat_dim=['time'],parallel=True)
+            paths = sorted(input.paths)
+            ds = xr.open_mfdataset(paths,
+                       concat_dim=['time'],parallel=True, combine='nested')
                 
             ds=ds.resample(time='Q-NOV').mean()
             ds=ds.sel(time=(ds.time.dt.season == wildcards.season))
@@ -117,7 +119,8 @@ rule mean_sea_level_pressure_and_wind_merra:
             lon,lat = locs.loc['BADOE']
         else:
             lon,lat = locs.loc[wildcards.location]
-        ds = xr.open_mfdataset(input.MERRA2_path,concat_dim=['time'])
+        paths = sorted(input.MERRA2_path)
+        ds = xr.open_mfdataset(paths,concat_dim=['time'], combine='nested')
         if wildcards.size_bin=='clay':
             sizebin = ['002']
         elif wildcards.size_bin=='fine-silt':
@@ -148,8 +151,9 @@ rule mean_sea_level_pressure_and_wind_merra:
             comp = mslp_wind_composite(msl, wind_u, wind_v, weak_years, strong_years, wildcards.plevel, 
             wildcards.season, wildcards.location, wildcards.kind)
         else:
-            ds = xr.open_mfdataset(input.paths,
-                       concat_dim=['time'],parallel=True)
+            paths = sorted(input.paths)
+            ds = xr.open_mfdataset(paths,
+                       concat_dim=['time'],parallel=True, combine='nested')
             ds=ds.resample(time='Q-NOV').mean()
             ds=ds.sel(time=(ds.time.dt.season == wildcards.season))
             plevel = float(wildcards.plevel[:-3])

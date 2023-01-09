@@ -29,14 +29,18 @@ rule calc_receptor_correlations:
         Temp_gradient = 'results/2mt_gradient/era5.single_level.2m_temperature_gradient.East_asia.MAM.'+ str(SDATE)+'-'+str(EDATE)+'.nc',
         emission_data = expand(config['flexdust_results']+'/emission_flux.time_series.{region}.MAM.'+ str(SDATE_m)+'-'+str(EDATE_m)+'.nc',
                         region=['taklamakan','mongolia','north_west', 'total'],allow_missing=True),
-        receptor_data_wetdep_2micron = expand('results/model_results/time_series/wetdep/wetdep.{location}.total.2micron.MAM.'+ str(SDATE_m)+'-'+str(EDATE_m)+'.nc',
-                               location=config['receptors'].keys() ,allow_missing=True),
-        receptor_data_drydep_2micron = expand('results/model_results/time_series/drydep/drydep.{location}.total.2micron.MAM.'+ str(SDATE_m)+'-'+str(EDATE_m)+'.nc',
-                               location=config['receptors'].keys() ,allow_missing=True),
-        receptor_data_wetdep_20micron = expand('results/model_results/time_series/wetdep/wetdep.{location}.total.20micron.MAM.'+ str(SDATE_m)+'-'+str(EDATE_m)+'.nc',
-                               location=config['receptors'].keys() ,allow_missing=True),
-        receptor_data_drydep_20micron = expand('results/model_results/time_series/drydep/drydep.{location}.total.20micron.MAM.'+ str(SDATE_m)+'-'+str(EDATE_m)+'.nc',
-                               location=config['receptors'].keys() ,allow_missing=True)
+        receptor_data_wetdep_2micron = expand('results/model_results/time_series/wetdep/wetdep.{location}.{source}.2micron.MAM.'+ str(SDATE_m)+'-'+str(EDATE_m)+'.nc',
+                               location=config['receptors'].keys() , 
+                               source=['mongolia','taklamakan','north_west', 'total']),
+        receptor_data_drydep_2micron = expand('results/model_results/time_series/drydep/drydep.{location}.{source}.2micron.MAM.'+ str(SDATE_m)+'-'+str(EDATE_m)+'.nc',
+                               location=config['receptors'].keys(),
+                               source=['mongolia','taklamakan','north_west', 'total']),
+        receptor_data_wetdep_20micron = expand('results/model_results/time_series/wetdep/wetdep.{location}.{source}.20micron.MAM.'+ str(SDATE_m)+'-'+str(EDATE_m)+'.nc',
+                               location=config['receptors'].keys(),
+                               source=['mongolia','taklamakan','north_west', 'total']),
+        receptor_data_drydep_20micron = expand('results/model_results/time_series/drydep/drydep.{location}.{source}.20micron.MAM.'+ str(SDATE_m)+'-'+str(EDATE_m)+'.nc',
+                               location=config['receptors'].keys(),
+                               source=['mongolia','taklamakan','north_west', 'total'])
         
     output:
         outpath='results/timeseries_table.csv'
@@ -64,18 +68,21 @@ rule calc_receptor_correlations:
                 else:
                     df['Precip '+receptor_name+' '+season] = precip['tp'].loc[sdate_m : edate_m]
             return df
-        def prepare_depostion_data(paths,psize, detrend=False):
-            df = pd.DataFrame()
+        def read_deposition_data(paths, psize, detrend=False):
+            dsets = []
             for path in paths:
                 receptor_name = path.split('/')[-1].split('.')[1]
                 kind = path.split('/')[-1].split('.')[0]
+                source_reg = path.split('/')[-1].split('.')[2]
                 ds = xr.open_dataset(path)
+                vname = f'{source_reg} {receptor_name} {kind} {psize}'
+                ds = ds.rename({ds.varName:vname})
                 if detrend:
-                    df[f'{receptor_name} {kind} {psize}'] = detrend_timeseries(ds[ds.varName].values)
+                    dsets.append(detrend_timeseries(ds[vname].to_series()))
                 else:
-                    df[f'{receptor_name} {kind} {psize}'] = ds[ds.varName].values
-            df.index = ds.year.values
-            return df
+                    dsets.append(ds[vname].to_series())
+            
+            return dsets
         # Read MAM indices 
         NAO_EOF_MAM = read_data(input.NAO_EOF_path, config['m_sdate'], config['m_edate'])
         AO_EOF_MAM = read_data(input.AO_EOF_path, config['m_sdate'], config['m_edate'])
@@ -135,12 +142,25 @@ rule calc_receptor_correlations:
             'Emissions total' : total[total.varName].values
         }
 
+        
+
         df_emission_data = pd.DataFrame(emission_data, index=taklamakan.time.dt.year.values)
         data = df_emission_data.join(df_indices)
-        depo_wet_2micron = prepare_depostion_data(input.receptor_data_wetdep_2micron,'2micron')
-        depo_wet_20micron = prepare_depostion_data(input.receptor_data_wetdep_20micron,'20micron')
-        depo_dry_2micron = prepare_depostion_data(input.receptor_data_drydep_2micron,'2micron')
-        depo_dry_20micron = prepare_depostion_data(input.receptor_data_drydep_20micron,'20micron')
-        data = data.join([depo_wet_2micron, depo_wet_20micron,depo_dry_2micron,depo_dry_20micron])
+        deposition_data = {
+            'wet_2micron' : read_deposition_data(input.receptor_data_wetdep_2micron,'2micron', detrend=False),
+            'wet_20micron' : read_deposition_data(input.receptor_data_wetdep_20micron,'20micron',detrend=False),
+            'dry_2micron' :  read_deposition_data(input.receptor_data_drydep_2micron,'2micron',detrend=False),
+            'dry_20micron' : read_deposition_data(input.receptor_data_drydep_20micron,'20micron',detrend=False)  
+        }
+        
+        dfs = []
+        for key,depodata in deposition_data.items():
+            dfs.append(
+                pd.DataFrame(depodata).T
+            )
+
+        # print(dfs)
+
+        data = data.join(dfs)
         data.to_csv(output.outpath)
 
