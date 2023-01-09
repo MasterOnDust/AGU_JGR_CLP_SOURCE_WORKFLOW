@@ -93,3 +93,19 @@ rule make_deposition:
               region=['total'])
 
 
+
+rule make_deposition_drydep:
+    input:
+        expand('results/model_results/time_series/{kind}/{kind}.{location}.{region}.{size}.MAM.{sdate}-{edate}.nc',
+            location=['SACOL','LINGTAI','BADOE','SHAPOTOU','YINCHUAN', 'LANTIAN','LUOCHUAN'], 
+              size=['2micron','20micron'], sdate=MODEL_SDATE,edate=MODEL_EDATE,kind=['drydep'],
+              region=['total'])
+
+
+
+rule make_deposition_wetdep:
+    input:
+        expand('results/model_results/time_series/{kind}/{kind}.{location}.{region}.{size}.MAM.{sdate}-{edate}.nc',
+            location=['SACOL','LINGTAI','BADOE','SHAPOTOU','YINCHUAN', 'LANTIAN','LUOCHUAN'], 
+              size=['2micron','20micron'], sdate=MODEL_SDATE,edate=MODEL_EDATE,kind=['wetdep'],
+              region=['total'])
