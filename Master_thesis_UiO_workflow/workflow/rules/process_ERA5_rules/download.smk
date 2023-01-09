@@ -54,3 +54,4 @@ rule download_monthly_era5_land:
         ncks -O --msa -d longitude,181.,360. -d longitude,0.,180.0 {output} {output}
         ncap2 -O -s 'where(longitude > 180) longitude=longitude-360' {output} {output}
         """
+
