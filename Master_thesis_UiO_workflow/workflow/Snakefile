@@ -43,7 +43,6 @@ include: "rules/process_ERA5_rules/calc_AO.smk"
 include: "rules/process_ERA5_rules/calc_APV_indecies.smk"
 include: "rules/precipitation_at_receptor.smk"
 include: 'rules/process_models_data_rules/process_emission_field.smk'
-include: 'rules/process_models_data_rules/process_source_contribution.smk'
 include: 'rules/process_models_data_rules/calc_total_deposition.smk'
 include: 'rules/create_composite.smk'
 include: 'rules/create_composite_MERRA2.smk'
@@ -53,7 +52,6 @@ include: 'rules/download_orography.smk'
 include: 'rules/process_models_data_rules/trajectory_clustering.smk'
 include: 'rules/process_ERA5_rules/download_data_coab_detection.smk'
 include: 'plotting_notebooks.smk'
-include: 'rules/get_dust_loading_trajectories.smk'
 include: 'plot_agu_figures.smk'
 
 SDATE=config['sdate']
