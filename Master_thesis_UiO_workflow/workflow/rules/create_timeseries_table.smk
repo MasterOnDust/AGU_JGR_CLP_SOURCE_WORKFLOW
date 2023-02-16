@@ -5,7 +5,7 @@ EDATE=config['edate']
 SDATE_m = config['m_sdate']
 EDATE_m = config['m_edate']
 
-rule calc_receptor_correlations:
+rule create_timeseries_table:
     input:
         NAO_EOF_path_djf = 'results/nao/era5.single_level.NAO_EOF.DJF.'+ str(SDATE)+'-'+str(EDATE)+'.nc',
         AO_EOF_path_djf = 'results/ao/era5.1000hPa.AO_EOF.DJF.'+ str(SDATE)+'-'+str(EDATE)+'.nc',
@@ -24,23 +24,27 @@ rule calc_receptor_correlations:
         SHI_path = 'results/eawmi/era5.single_level.SHI.MAM.'+ str(SDATE)+'-'+str(EDATE)+'.nc',
         EAWMI_path = 'results/eawmi/era5.single_level.U300hPa_EAWM.MAM.'+ str(SDATE)+'-'+str(EDATE)+'.nc',
         Precipitation_path = expand('results/precip/era5.single_level.total_precipitation.{location}.MAM.'+ str(SDATE)+'-'+str(EDATE)+'.csv',
-                            location=config['receptors'].keys() ,allow_missing=True),
+                            location=['SACOL','BADOE','LANTIAN', 'LINGTAI', 'SHAPOTOU', 'LUOCHUAN'] ,allow_missing=True),
         NAO_station_path = 'results/nao/era5.single_level.NAO_station.MAM.'+ str(SDATE)+'-'+str(EDATE)+'.nc',
         Temp_gradient = 'results/2mt_gradient/era5.single_level.2m_temperature_gradient.East_asia.MAM.'+ str(SDATE)+'-'+str(EDATE)+'.nc',
         emission_data = expand(config['flexdust_results']+'/emission_flux.time_series.{region}.MAM.'+ str(SDATE_m)+'-'+str(EDATE_m)+'.nc',
-                        region=['taklamakan','mongolia','north_west', 'total'],allow_missing=True),
-        receptor_data_wetdep_2micron = expand('results/model_results/time_series/wetdep/wetdep.{location}.{source}.2micron.MAM.'+ str(SDATE_m)+'-'+str(EDATE_m)+'.nc',
-                               location=config['receptors'].keys() , 
-                               source=['mongolia','taklamakan','north_west', 'total']),
-        receptor_data_drydep_2micron = expand('results/model_results/time_series/drydep/drydep.{location}.{source}.2micron.MAM.'+ str(SDATE_m)+'-'+str(EDATE_m)+'.nc',
-                               location=config['receptors'].keys(),
-                               source=['mongolia','taklamakan','north_west', 'total']),
-        receptor_data_wetdep_20micron = expand('results/model_results/time_series/wetdep/wetdep.{location}.{source}.20micron.MAM.'+ str(SDATE_m)+'-'+str(EDATE_m)+'.nc',
-                               location=config['receptors'].keys(),
-                               source=['mongolia','taklamakan','north_west', 'total']),
-        receptor_data_drydep_20micron = expand('results/model_results/time_series/drydep/drydep.{location}.{source}.20micron.MAM.'+ str(SDATE_m)+'-'+str(EDATE_m)+'.nc',
-                               location=config['receptors'].keys(),
-                               source=['mongolia','taklamakan','north_west', 'total'])
+                        region=['taklamakan','mongolia','north_west', 'total','quaidam_basin','central_asia','jungger_basin'],allow_missing=True),
+        receptor_data_wetdep_2micron = expand(
+            'results/model_results/time_series/wetdep/wetdep.{location}.{source}.2micron.MAM.'+ str(SDATE_m)+'-'+str(EDATE_m)+'.nc',
+                               location=['SACOL','BADOE','LANTIAN', 'LINGTAI', 'SHAPOTOU', 'LUOCHUAN'] , 
+                               source=['mongolia','taklamakan','north_west', 'total', 'quaidam_basin', 'central_asia','jungger_basin']),
+        receptor_data_drydep_2micron = expand(
+            'results/model_results/time_series/drydep/drydep.{location}.{source}.2micron.MAM.'+ str(SDATE_m)+'-'+str(EDATE_m)+'.nc',
+                               location=['SACOL','BADOE','LANTIAN', 'LINGTAI', 'SHAPOTOU', 'LUOCHUAN'],
+                               source=['taklamakan','mongolia','north_west', 'total','quaidam_basin','central_asia','jungger_basin']),
+        receptor_data_wetdep_20micron = expand(
+            'results/model_results/time_series/wetdep/wetdep.{location}.{source}.20micron.MAM.'+ str(SDATE_m)+'-'+str(EDATE_m)+'.nc',
+                               location=['SACOL','BADOE','LANTIAN', 'LINGTAI', 'SHAPOTOU', 'LUOCHUAN'],
+                               source=['taklamakan','mongolia','north_west', 'total','quaidam_basin','central_asia','jungger_basin']),
+        receptor_data_drydep_20micron = expand(
+            'results/model_results/time_series/drydep/drydep.{location}.{source}.20micron.MAM.'+ str(SDATE_m)+'-'+str(EDATE_m)+'.nc',
+                               location=['SACOL','BADOE','LANTIAN', 'LINGTAI', 'SHAPOTOU', 'LUOCHUAN'],
+                               source=['taklamakan','mongolia','north_west', 'total','quaidam_basin','central_asia','jungger_basin'])
         
     output:
         outpath='results/timeseries_table.csv'
@@ -130,21 +134,16 @@ rule calc_receptor_correlations:
         }
         df_indices = pd.DataFrame(indicies, index=AO_EOF_DJF.time.values)
         df_indices = df_indices.join([precip_mam,precip_djf])
-        taklamakan =  xr.open_dataset(input.emission_data[0])
-        mongolia = xr.open_dataset(input.emission_data[1])
-        north_west = xr.open_dataset(input.emission_data[2])
-        total = xr.open_dataset(input.emission_data[3])
         
-        emission_data = {
-            'Emissions taklamakan' : taklamakan[taklamakan.varName].values,
-            'Emissions mongolia' : mongolia[mongolia.varName].values,
-            'Emissions north_west' : north_west[north_west.varName].values,
-            'Emissions total' : total[total.varName].values
-        }
+        source_regions = ['Taklamakan','Mongolia', 'North West', 'Total', 
+                            'Quaidam Baisin','Central Asia', 'Jungger Basin']
+
+        emidsets = [xr.open_dataset(p) for p in input.emission_data]
+        emission_data = {s:ds[ds.varName] for s,ds in zip(source_regions,emidsets)}
 
         
 
-        df_emission_data = pd.DataFrame(emission_data, index=taklamakan.time.dt.year.values)
+        df_emission_data = pd.DataFrame(emission_data, index=emidsets[0].time.dt.year.values)
         data = df_emission_data.join(df_indices)
         deposition_data = {
             'wet_2micron' : read_deposition_data(input.receptor_data_wetdep_2micron,'2micron', detrend=False),
