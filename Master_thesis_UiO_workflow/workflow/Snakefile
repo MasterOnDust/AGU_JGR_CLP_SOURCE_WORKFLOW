@@ -37,6 +37,7 @@ include: "rules/process_ERA5_rules/utils.smk"
 include: "rules/process_ERA5_rules/calculate_means.smk"
 include: "rules/process_ERA5_rules/climatology_calculation.smk"
 include: "rules/process_ERA5_rules/calculate_anomalies.smk"
+include: "rules/process_ERA5_rules/download_land_surface_data.smk"
 include: "rules/process_ERA5_rules/calc_EAWMI.smk"
 include: "rules/process_ERA5_rules/calc_AO.smk"
 include: "rules/process_ERA5_rules/calc_APV_indecies.smk"
@@ -50,6 +51,7 @@ include: 'rules/process_ERA5_rules/calc_temperature_gradient.smk'
 include: 'rules/create_timeseries_table.smk'
 include: 'rules/download_orography.smk'
 include: 'rules/process_models_data_rules/trajectory_clustering.smk'
+include: 'rules/process_ERA5_rules/download_data_coab_detection.smk'
 include: 'plotting_notebooks.smk'
 include: 'rules/get_dust_loading_trajectories.smk'
 include: 'plot_agu_figures.smk'
@@ -76,8 +78,6 @@ rule all:
                location=['SACOL','LINGTAI','BADOE','SHAPOTOU','YINCHUAN', 'LANTIAN','LUOCHUAN'],
               region=['total'], season=['DJF','MAM'])
 
-
-
 rule calculate_correlations_receptor:
     input:
         expand('results/correlations_receptor/{kind}/{kind}.{location}.{psize}.correlations.{season}.csv',
@@ -90,7 +90,7 @@ rule make_deposition:
         expand('results/model_results/time_series/{kind}/{kind}.{location}.{region}.{size}.MAM.{sdate}-{edate}.nc',
             location=['SACOL','LINGTAI','BADOE','SHAPOTOU','YINCHUAN', 'LANTIAN','LUOCHUAN'], 
               size=['2micron','20micron'], sdate=MODEL_SDATE,edate=MODEL_EDATE,kind=['drydep', 'wetdep','total_deposition'],
-              region=['total'])
+              region=['total', 'mongolia','taklamakan','north_west'])
 
 
 

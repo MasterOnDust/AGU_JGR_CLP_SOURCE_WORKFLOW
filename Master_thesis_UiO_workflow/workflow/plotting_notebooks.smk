@@ -23,10 +23,11 @@ rule plot_ao_mo_composite:
                 variable = ['u_component_of_wind', 'v_component_of_wind','GeopotHeight'],
                 season=['DJF','MAM']),
         'results/ao/era5.1000hPa.AO_EOF.DJF.1979-2019.nc',
-        'results/eawmi/era5.single_level.EAWM_MO.DJF.1979-2019.nc'
+        'results/eawmi/era5.single_level.EAWM_MO.DJF.1979-2019.nc',
+        'downloads/ERA5_orography.nc'
     output:
-        path_500hpa ='figs/winter_MO_AO_composite.pdf',
-        path_850hpa = 'figs/winter_MO_AO_composite_500h.pdf'
+        path_500hpa='figs/winter_MO_AO_composite_850hPa.pdf',
+        path_850hpa='figs/winter_MO_AO_composite_500hPa.pdf'
     notebook:
         'notebooks/AO_MO_composite.ipynb'
 
