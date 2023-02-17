@@ -31,8 +31,8 @@ rule sum_spring_deposition:
         spring_depo=spring_depo.to_dataset(name=ds.varName)
         spring_depo.attrs=ds.attrs
         spring_depo.attrs['filename']=output.outpath
-        spring_depo['RELLAT']=ds['RELLAT']
-        spring_depo['RELLNG']=ds['RELLNG']
+        spring_depo['RELLAT']=ds['RELLAT1']
+        spring_depo['RELLNG']=ds['RELLNG1']
         spring_depo.to_netcdf(output.outpath)
         
 rule source_contribution_source_region_timeseries:

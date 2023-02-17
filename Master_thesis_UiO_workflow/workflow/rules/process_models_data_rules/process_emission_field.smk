@@ -10,11 +10,19 @@
 #;F: 42-45 ; 112-124    North east                                         #
 ############################################################################
 
-
+def get_flexdust_paths(w):
+    years=[str(y) for y in range(int(w.sdate), int(w.edate)+1)]
+    paths = expand(config['flexdust_path']+'/{year}/FLEXDUST_{year}{start}_{year}{end}.nc', 
+                    year=years, allow_missing=True)
+    fullp = []
+    for p in paths:
+        wc = glob_wildcards(p) 
+        fullp.append(expand(p, start=wc.start, end=wc.end)[0])
+    
+    return fullp
 rule resample:
     input:
-        paths=expand(config['flexdust_path']+'/{year}/FLEXDUST_{year}0301_{year}0531.nc', 
-                    year=[year for year in range(config['m_sdate'], config['m_edate']+1)])
+        paths=get_flexdust_paths
     
     output:
         outpath=config['intermediate_results_models']+'/emission_flux.china.{frequency}.{sdate}-{edate}.nc'
@@ -27,7 +35,7 @@ rule resample:
             freq='m'
         else:
             freq=wildcards.frequency
-       
+        paths = sorted(input.paths)
         ds = resample_emission_flux(input.paths, config['domain']['lon0'],config['domain']['lon1'],
                                    config['domain']['lat0'], config['domain']['lat1'],
                                    frequency=freq)
