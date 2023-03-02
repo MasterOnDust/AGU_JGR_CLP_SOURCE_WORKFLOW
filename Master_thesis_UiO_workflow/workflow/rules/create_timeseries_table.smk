@@ -24,26 +24,26 @@ rule create_timeseries_table:
         SHI_path = 'results/eawmi/era5.single_level.SHI.MAM.'+ str(SDATE)+'-'+str(EDATE)+'.nc',
         EAWMI_path = 'results/eawmi/era5.single_level.U300hPa_EAWM.MAM.'+ str(SDATE)+'-'+str(EDATE)+'.nc',
         Precipitation_path = expand('results/precip/era5.single_level.total_precipitation.{location}.MAM.'+ str(SDATE)+'-'+str(EDATE)+'.csv',
-                            location=['SACOL','BADOE','LANTIAN', 'LINGTAI', 'SHAPOTOU', 'LUOCHUAN'] ,allow_missing=True),
+                            location=['SACOL','BAODE','LANTIAN', 'LINGTAI', 'SHAPOTOU', 'LUOCHUAN'] ,allow_missing=True),
         NAO_station_path = 'results/nao/era5.single_level.NAO_station.MAM.'+ str(SDATE)+'-'+str(EDATE)+'.nc',
         Temp_gradient = 'results/2mt_gradient/era5.single_level.2m_temperature_gradient.East_asia.MAM.'+ str(SDATE)+'-'+str(EDATE)+'.nc',
         emission_data = expand(config['flexdust_results']+'/emission_flux.time_series.{region}.MAM.'+ str(SDATE_m)+'-'+str(EDATE_m)+'.nc',
                         region=['taklamakan','mongolia','north_west', 'total','quaidam_basin','central_asia','jungger_basin'],allow_missing=True),
         receptor_data_wetdep_2micron = expand(
             'results/model_results/time_series/wetdep/wetdep.{location}.{source}.2micron.MAM.'+ str(SDATE_m)+'-'+str(EDATE_m)+'.nc',
-                               location=['SACOL','BADOE','LANTIAN', 'LINGTAI', 'SHAPOTOU', 'LUOCHUAN'] , 
+                               location=['SACOL','BAODE','LANTIAN', 'LINGTAI', 'SHAPOTOU', 'LUOCHUAN'] , 
                                source=['mongolia','taklamakan','north_west', 'total', 'quaidam_basin', 'central_asia','jungger_basin']),
         receptor_data_drydep_2micron = expand(
             'results/model_results/time_series/drydep/drydep.{location}.{source}.2micron.MAM.'+ str(SDATE_m)+'-'+str(EDATE_m)+'.nc',
-                               location=['SACOL','BADOE','LANTIAN', 'LINGTAI', 'SHAPOTOU', 'LUOCHUAN'],
+                               location=['SACOL','BAODE','LANTIAN', 'LINGTAI', 'SHAPOTOU', 'LUOCHUAN'],
                                source=['taklamakan','mongolia','north_west', 'total','quaidam_basin','central_asia','jungger_basin']),
         receptor_data_wetdep_20micron = expand(
             'results/model_results/time_series/wetdep/wetdep.{location}.{source}.20micron.MAM.'+ str(SDATE_m)+'-'+str(EDATE_m)+'.nc',
-                               location=['SACOL','BADOE','LANTIAN', 'LINGTAI', 'SHAPOTOU', 'LUOCHUAN'],
+                               location=['SACOL','BAODE','LANTIAN', 'LINGTAI', 'SHAPOTOU', 'LUOCHUAN'],
                                source=['taklamakan','mongolia','north_west', 'total','quaidam_basin','central_asia','jungger_basin']),
         receptor_data_drydep_20micron = expand(
             'results/model_results/time_series/drydep/drydep.{location}.{source}.20micron.MAM.'+ str(SDATE_m)+'-'+str(EDATE_m)+'.nc',
-                               location=['SACOL','BADOE','LANTIAN', 'LINGTAI', 'SHAPOTOU', 'LUOCHUAN'],
+                               location=['SACOL','BAODE','LANTIAN', 'LINGTAI', 'SHAPOTOU', 'LUOCHUAN'],
                                source=['taklamakan','mongolia','north_west', 'total','quaidam_basin','central_asia','jungger_basin'])
         
     output:
