@@ -124,6 +124,17 @@ rule plot_composite_combo_500hPa:
     notebook:
         'notebooks/AGU_paper_figures/Deposition_500hPa_composite_v2.py.ipynb'
 
+rule plot_composite_combo:
+    input:
+        expand('results/model_results/time_series/{kind}/{kind}.{loc}.total.{psize}.MAM.{sdate}-{edate}.nc',
+            loc=LOCS_AGU_PAPER,
+            kind=['total_deposition','wetdep'],sdate=config['m_sdate'], edate=config['m_edate'],
+            psize=['2micron','20micron'])
+    output:
+        source_contrib_diff_path='figs/agu/fraction_source_contrib_combo_composite.png'
+    notebook:
+        'notebooks/AGU_paper_figures/Deposition_composite_difference.py.ipynb'
+
 
 rule plot_all_agu:
     input:
