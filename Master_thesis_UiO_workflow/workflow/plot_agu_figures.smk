@@ -55,14 +55,26 @@ rule plot_dust_loading_trajectories_agu:
 
 rule create_deposition_histogram:
     input:
-        expand('results/model_results/intermediate_results/timeseries/{kind}/{kind}.{loc}.{psize}.Day.{year}.csv',
-        loc=['SACOL','LINGTAI','BADOE','SHAPOTOU','LANTIAN', 'LUOCHUAN'], 
-        year=[str(y) for y in range(1999,2020)], allow_missing=True)
+        wetdep_2micron = expand('results/model_results/intermediate_results/timeseries/wetdep/wetdep.{loc}.2micron.Day.{year}.csv',
+        loc=LOCS_AGU_PAPER,
+        year=[str(y) for y in range(1999,2020)], allow_missing=True),
+        wetdep_20micron = expand('results/model_results/intermediate_results/timeseries/wetdep/wetdep.{loc}.20micron.Day.{year}.csv',
+        loc=LOCS_AGU_PAPER,
+        year=[str(y) for y in range(1999,2020)], allow_missing=True),
+        drypdep_2micron = expand('results/model_results/intermediate_results/timeseries/drydep/drydep.{loc}.2micron.Day.{year}.csv',
+        loc=LOCS_AGU_PAPER, 
+        year=[str(y) for y in range(1999,2020)], allow_missing=True),
+        drydep_20micron = expand('results/model_results/intermediate_results/timeseries/drydep/drydep.{loc}.2micron.Day.{year}.csv',
+        loc=LOCS_AGU_PAPER,
+        year=[str(y) for y in range(1999,2020)], allow_missing=True),
+
+    params:
+        locs =  ['SHAPOTOU','SACOL','BAODE','LUOCHUAN','LINGTAI','LANTIAN']
     output:
-        outpath = 'figs/agu/{kind}_{psize}_deposition_histogram.pdf'
+        outpath = 'figs/agu/deposition_histograms.pdf'
 
     notebook:
-        'notebooks/AGU_paper_figures/Create_deposition_histogram.ipynb'
+        'notebooks/AGU_paper_figures/Create_deposition_histogram_v2.ipynb'
 
 
 rule plot_source_contribution_agu:
