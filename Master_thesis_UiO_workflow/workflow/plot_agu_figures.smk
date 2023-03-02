@@ -1,48 +1,6 @@
-LOCS_AGU_PAPER = ['SACOL','LINGTAI','BADOE','SHAPOTOU','LANTIAN', 'LUOCHUAN']
+LOCS_AGU_PAPER = ['SHAPOTOU','SACOL','BAODE','LUOCHUAN','LINGTAI','LANTIAN']
 
-rule plot_source_contribution_agu:
-    input:
-        expand('results/model_results/time_series/{kind}/{kind}.{loc}.total.{psize}.MAM.{sdate}-{edate}.nc',
-             psize=['2micron','20micron'],   loc=LOCS_AGU_PAPER,
-              kind='total_deposition',sdate=config['m_sdate'], edate=config['m_edate'])
-    output:
-        clay_plot = 'figs/agu/2micron_total_deposition_source_contribution.pdf',
-        silt_plot ='figs/agu/20micron_total_deposition_source_contribution.pdf'
-    notebook:
-        'notebooks/AGU_paper_figures/Dust_deposition_source_contribution.py.ipynb'
 
-rule plot_source_contribution_wetdep_agu:
-    input:
-        expand('results/model_results/time_series/{kind}/{kind}.{loc}.total.{psize}.MAM.{sdate}-{edate}.nc',
-             psize=['2micron','20micron'],   loc=LOCS_AGU_PAPER,
-              kind='wetdep',sdate=config['m_sdate'], edate=config['m_edate'])
-    output:
-        clay_plot = 'figs/agu/2micron_wet_deposition_source_contribution.pdf',
-        silt_plot ='figs/agu/20micron_wet_deposition_source_contribution.pdf'
-    notebook:
-        'notebooks/AGU_paper_figures/Dust_deposition_source_contribution_wetdep.py.ipynb'
-
-rule plot_source_contribution_drydep_agu:
-    input:
-        expand('results/model_results/time_series/{kind}/{kind}.{loc}.total.{psize}.MAM.{sdate}-{edate}.nc',
-             psize=['2micron','20micron'],   loc=LOCS_AGU_PAPER,
-              kind='drydep',sdate=config['m_sdate'], edate=config['m_edate'])
-    output:
-        clay_plot = 'figs/agu/2micron_dry_deposition_source_contribution.pdf',
-        silt_plot ='figs/agu/20micron_dry_deposition_source_contribution.pdf'
-    notebook:
-        'notebooks/AGU_paper_figures/Dust_deposition_source_contribution_drydep.py.ipynb'
-
-rule plot_source_contribution_drydep_wet_combo_agu:
-    input:
-        expand('results/model_results/time_series/{kind}/{kind}.{loc}.total.{psize}.MAM.{sdate}-{edate}.nc',
-             psize=['2micron','20micron'],   loc=LOCS_AGU_PAPER,
-              kind=['drydep','wetdep'],sdate=config['m_sdate'], edate=config['m_edate'])
-    output:
-        clay_plot = 'figs/agu/2micron_dry_deposition_wetdep_combo_source_contribution.pdf',
-        # silt_plot ='figs/agu/20micron_dry_deposition_source_contribution.pdf'
-    notebook:
-        'notebooks/AGU_paper_figures/Dust_deposition_source_contribution_drydep_wetdep_combo.py.ipynb'
 
 
 rule plot_500hPa_composite_agu:
@@ -85,8 +43,9 @@ rule plot_850hPa_composite_agu:
 rule plot_dust_loading_trajectories_agu:
     input:
         trajec_files = expand('results/model_results/trajectories/dust_loading_traj_{kind}_{size}_{loc}_{sdate}-{edate}.nc',
-                         size=['2micron','20micron'],   loc=['SACOL','LINGTAI','BADOE','SHAPOTOU','LANTIAN', 'LUOCHUAN'],
-              kind=['drydep','wetdep'],sdate=config['m_sdate'], edate=config['m_edate'])
+                         size=['2micron','20micron'],   loc=['SACOL','LINGTAI','BAODE','SHAPOTOU','LANTIAN', 'LUOCHUAN'],
+              kind=['drydep','wetdep'],sdate=config['m_sdate'], edate=config['m_edate']),
+        emi_dust = 'results/model_results/intermediate_results/emission_flux.china.MAM.1999-2019.nc'
     output:
         path_map = 'figs/agu/average_dust_transport_trajectories.pdf',
         path_vertical_profile = 'figs/agu/average_dust_transport_height.pdf'
@@ -105,18 +64,8 @@ rule create_deposition_histogram:
     notebook:
         'notebooks/AGU_paper_figures/Create_deposition_histogram.ipynb'
 
-rule plot_combo_plotv2:
-    input:
-        expand('results/model_results/time_series/{kind}/{kind}.{loc}.total.{psize}.MAM.{sdate}-{edate}.nc',
-            loc=LOCS_AGU_PAPER,
-            kind=['total_deposition','wetdep'],sdate=config['m_sdate'], edate=config['m_edate'],
-            allow_missing=True)
-    output:
-        combopath='figs/agu/fraction_source_contrib_combo_v2_{psize}.png'
-    notebook:
-        'notebooks/AGU_paper_figures/Dust_deposition_source_contribution_drydep_wetdep_combo_v2.py.ipynb'
 
-rule plot_combo_plotv4:
+rule plot_source_contribution_agu:
     input:
         expand('results/model_results/time_series/{kind}/{kind}.{loc}.total.{psize}.MAM.{sdate}-{edate}.nc',
             loc=LOCS_AGU_PAPER,
@@ -129,16 +78,6 @@ rule plot_combo_plotv4:
 
 
 
-rule plot_composite_combo:
-    input:
-        expand('results/model_results/time_series/{kind}/{kind}.{loc}.total.{psize}.MAM.{sdate}-{edate}.nc',
-            loc=LOCS_AGU_PAPER,
-            kind=['total_deposition','wetdep'],sdate=config['m_sdate'], edate=config['m_edate'],
-            psize=['2micron','20micron'])
-    output:
-        source_contrib_diff_path='figs/agu/fraction_source_contrib_combo_composite.png'
-    notebook:
-        'notebooks/AGU_paper_figures/Deposition_composite_difference.py.ipynb'
 
 
 rule plot_composite_combo_850hPa:
@@ -177,12 +116,10 @@ rule plot_composite_combo_500hPa:
 rule plot_all_agu:
     input:
         rules.plot_source_contribution_agu.output,
-        rules.plot_source_contribution_drydep_agu.output,
-        rules.plot_source_contribution_wetdep_agu.output,
         rules.plot_correlation_matrix_agu.output,
-        expand(rules.create_deposition_histogram.output, kind=['wetdep','drydep'],psize=['20micron','2micron']),
-        expand(rules.plot_850hPa_composite_agu.output, kind=['drydep','wetdep','total_deposition']),
-        expand(rules.plot_500hPa_composite_agu.output, kind=['drydep','wetdep','total_deposition']),
+        # expand(rules.create_deposition_histogram.output, kind=['wetdep','drydep'],psize=['20micron','2micron']),
+        expand(rules.plot_composite_combo_850hPa.output, kind=['drydep','wetdep','total_deposition']),
+        expand(rules.plot_composite_combo_500hPa.output, kind=['drydep','wetdep','total_deposition'])
  
 
         
