@@ -32,7 +32,6 @@ wildcard_constraints:
     threshold='05-std|1-std|2-std'
 
 include: "rules/process_ERA5_rules/download.smk"
-include: "rules/process_ERA5_rules/calc_nao.smk"
 include: "rules/process_ERA5_rules/utils.smk"
 include: "rules/process_ERA5_rules/calculate_means.smk"
 include: "rules/process_ERA5_rules/climatology_calculation.smk"
@@ -41,15 +40,12 @@ include: "rules/process_ERA5_rules/download_land_surface_data.smk"
 include: "rules/process_ERA5_rules/calc_EAWMI.smk"
 include: "rules/process_ERA5_rules/calc_AO.smk"
 include: "rules/process_ERA5_rules/calc_APV_indecies.smk"
-include: "rules/precipitation_at_receptor.smk"
 include: 'rules/process_models_data_rules/process_emission_field.smk'
 include: 'rules/process_models_data_rules/calc_total_deposition.smk'
 include: 'rules/create_composite.smk'
-include: 'rules/create_composite_MERRA2.smk'
 include: 'rules/process_ERA5_rules/calc_temperature_gradient.smk'
 include: 'rules/create_timeseries_table.smk'
 include: 'rules/download_orography.smk'
-include: 'rules/process_ERA5_rules/download_data_coab_detection.smk'
 include: 'plotting_notebooks.smk'
 include: 'plot_agu_figures.smk'
 
@@ -70,10 +66,7 @@ rule all:
                kind=['total_deposition'], psize=['2micron','20micron'], 
                location=['SACOL','LINGTAI','BADOE','SHAPOTOU','YINCHUAN', 'LANTIAN','LUOCHUAN'],std=['05-std','1-std'],
               region=['total'], season=['DJF','MAM']),
-        expand('results/composites/windspeed_geopot_200hPa/era5.wind_geopot.200hPa.composite.{kind}.{psize}.{season}.{location}.{region}.4_rank.1999-2019.nc', 
-               kind=['total_deposition'], psize=['2micron','20micron'], 
-               location=['SACOL','LINGTAI','BADOE','SHAPOTOU','YINCHUAN', 'LANTIAN','LUOCHUAN'],
-              region=['total'], season=['DJF','MAM'])
+
 
 rule calculate_correlations_receptor:
     input:

@@ -2,21 +2,6 @@ LOCS_AGU_PAPER = ['SHAPOTOU','SACOL','BAODE','LUOCHUAN','LINGTAI','LANTIAN']
 
 
 
-
-rule plot_500hPa_composite_agu:
-    input:
-        expand('results/composites/windspeed_geopot_500hPa/era5.wind_geopot.500hPa.composite.{kind}.{psize}.{season}.{loc}.total.4_rank.{sdate}-{edate}.nc',
-             psize=['2micron','20micron'],   loc=LOCS_AGU_PAPER,
-              sdate=config['m_sdate'], edate=config['m_edate'],season=['MAM','DJF'],allow_missing=True)
-    output:
-        silt_composite_path_djf='figs/agu/Composite_maps/geopot_ws_500hPa_{kind}_20micron_DJF.pdf',
-        clay_composite_path_djf='figs/agu/Composite_maps/geopot_ws_500hPa_{kind}_2micron_DJF.pdf', 
-        silt_composite_path_mam='figs/agu/Composite_maps/geopot_ws_500hPa_{kind}_20micron_MAM.pdf',
-        clay_composite_path_mam='figs/agu/Composite_maps/geopot_ws_500hPa_{kind}_2micron_MAM.pdf'
-    
-    notebook:
-        'notebooks/AGU_paper_figures/Deposition_500hPa_composite.py.ipynb'
-
 rule plot_correlation_matrix_agu:
     input:
         'results/timeseries_table.csv'
@@ -25,20 +10,6 @@ rule plot_correlation_matrix_agu:
         outpath_silt='figs/agu/correlation_matrix_silt.pdf'
     notebook:
         'notebooks/AGU_paper_figures/Plot_correlation_matrix_v2.py.ipynb'
-
-rule plot_850hPa_composite_agu:
-    input:
-        outpath=expand('results/composites/msl_pressure_wind_850hPa/era5.wind_msl.850hPa.composite.{kind}.{psize}.{season}.{loc}.total.4_rank.{sdate}-{edate}.nc',
-        psize=['2micron','20micron'],   loc=LOCS_AGU_PAPER,
-              sdate=config['m_sdate'], edate=config['m_edate'],season=['MAM','DJF'],allow_missing=True),
-        oro = 'downloads/ERA5_orography.nc'
-    output:
-        silt_composite_path_djf='figs/agu/Composite_maps/mslp_850hPa_{kind}_20micron_DJF.pdf',
-        clay_composite_path_djf='figs/agu/Composite_maps/mslp_850hPa_{kind}_2micron_DJF.pdf', 
-        silt_composite_path_mam='figs/agu/Composite_maps/mslp_850hPa_{kind}_20micron_MAM.pdf',
-        clay_composite_path_mam='figs/agu/Composite_maps/mslp_850hPa_{kind}_2micron_MAM.pdf'   
-    notebook:
-        'notebooks/AGU_paper_figures/Depostion_circulation_composite_850hPa_and_mslp.py.ipynb'
 
 rule plot_dust_loading_trajectories_agu:
     input:
@@ -81,7 +52,7 @@ rule plot_source_contribution_agu:
     input:
         expand('results/model_results/time_series/{kind}/{kind}.{loc}.total.{psize}.MAM.{sdate}-{edate}.nc',
             loc=LOCS_AGU_PAPER,
-            kind=['total_deposition','wetdep'],sdate=config['m_sdate'], edate=config['m_edate'],
+            kind=['drydep','wetdep'],sdate=config['m_sdate'], edate=config['m_edate'],
             psize=['2micron','20micron'])
     output:
         combopath='figs/agu/fraction_source_contrib_combo_v4.png'
@@ -91,58 +62,41 @@ rule plot_source_contribution_agu:
 
 
 
-
-rule plot_composite_combo_850hPa:
-    input:
-        outpath=expand('results/composites/msl_pressure_wind_850hPa/era5.wind_msl.850hPa.composite.{kind}.{psize}.{season}.{loc}.total.4_rank.{sdate}-{edate}.nc',
-        psize=['2micron','20micron'],   loc=LOCS_AGU_PAPER,
-              sdate=config['m_sdate'], edate=config['m_edate'],season=['MAM','DJF'],allow_missing=True),
-        oro = 'downloads/ERA5_orography.nc'
-    output:
-        composite_facet_plot='figs/agu/combo_850hPa_composite_figure_{kind}.png'
-    notebook:
-        'notebooks/AGU_paper_figures/Depostion_circulation_composite_850hPa_and_mslp_v2.py.ipynb'
-
 rule plot_psize_composite_combo_850hPa:
     input:
         outpath=expand('results/composites/msl_pressure_wind_850hPa/era5.wind_msl.850hPa.composite.{kind}.{psize}.{season}.{loc}.total.4_rank.{sdate}-{edate}.nc',
-        kind=['drydep','wetdep'],   loc=LOCS_AGU_PAPER,
+        kind=['drydep','total_deposition'],   loc=LOCS_AGU_PAPER,
               sdate=config['m_sdate'], edate=config['m_edate'],season=['MAM','DJF'],allow_missing=True),
         oro = 'downloads/ERA5_orography.nc'
     output:
         composite_facet_plot='figs/agu/combo_psize_850hPa_composite_figure_{psize}.png'
     notebook:
-        'notebooks/AGU_paper_figures/Depostion_circulation_composite_850hPa_and_mslp_v3.py.ipynb'
+        'notebooks/AGU_paper_figures/Depostion_circulation_composite_850hPa_and_mslp_v4.py.ipynb'
 
-rule plot_composite_combo_500hPa:
+
+rule plot_composite_combo_500hPa_v2:
     input:
         expand('results/composites/windspeed_geopot_500hPa/era5.wind_geopot.500hPa.composite.{kind}.{psize}.{season}.{loc}.total.4_rank.{sdate}-{edate}.nc',
-             psize=['2micron','20micron'],   loc=LOCS_AGU_PAPER,
-              sdate=config['m_sdate'], edate=config['m_edate'],season=['MAM','DJF'],allow_missing=True)
+             kind=['drydep','total_deposition'],   loc=LOCS_AGU_PAPER,
+              sdate=config['m_sdate'], edate=config['m_edate'],season=['MAM','DJF'],allow_missing=True),
     output:
-        composite_facet_plot='figs/agu/combo_500hPa_composite_figure_{kind}.png'
+        composite_facet_plot='figs/agu/combo_500hPa_composite_figure_{psize}.png'
     notebook:
-        'notebooks/AGU_paper_figures/Deposition_500hPa_composite_v2.py.ipynb'
+        'notebooks/AGU_paper_figures/Deposition_500hPa_composite_v3.py.ipynb'
 
-rule plot_composite_combo:
-    input:
-        expand('results/model_results/time_series/{kind}/{kind}.{loc}.total.{psize}.MAM.{sdate}-{edate}.nc',
-            loc=LOCS_AGU_PAPER,
-            kind=['total_deposition','wetdep'],sdate=config['m_sdate'], edate=config['m_edate'],
-            psize=['2micron','20micron'])
-    output:
-        source_contrib_diff_path='figs/agu/fraction_source_contrib_combo_composite.png'
-    notebook:
-        'notebooks/AGU_paper_figures/Deposition_composite_difference.py.ipynb'
+
+
 
 
 rule plot_all_agu:
     input:
-        rules.plot_source_contribution_agu.output,
+        rules.plot_ao_mo_composite.output,
         rules.plot_correlation_matrix_agu.output,
-        # expand(rules.create_deposition_histogram.output, kind=['wetdep','drydep'],psize=['20micron','2micron']),
-        expand(rules.plot_composite_combo_850hPa.output, kind=['drydep','wetdep','total_deposition']),
-        expand(rules.plot_composite_combo_500hPa.output, kind=['drydep','wetdep','total_deposition'])
+        rules.plot_dust_loading_trajectories_agu.output,
+        rules.create_deposition_histogram.output,
+        rules.plot_source_contribution_agu.output,
+        expand(rules.plot_composite_combo_500hPa_v2.output, psize=['2micron','20micron']),
+        expand(rules.plot_psize_composite_combo_850hPa.output,psize=['2micron','20micron'])
  
 
         
