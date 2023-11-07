@@ -92,7 +92,7 @@ rule plot_all_agu:
     input:
         rules.plot_ao_mo_composite.output,
         rules.plot_correlation_matrix_agu.output,
-        rules.plot_dust_loading_trajectories_agu.output,
+        #rules.plot_dust_loading_trajectories_agu.output,
         rules.create_deposition_histogram.output,
         rules.plot_source_contribution_agu.output,
         expand(rules.plot_composite_combo_500hPa_v2.output, psize=['2micron','20micron']),

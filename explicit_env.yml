@@ -423,5 +423,6 @@ dependencies:
   - zlib=1.2.13
   - zstd=1.5.5
   - pip:
-    - dust==0.1.1
-prefix: /nird/scratch/ovewh/analysis_workflow
+      - "--editable=git+https://github.com/MasterOnDust/Thesis_toolbox.git@v0.0.1#egg=Thesis_toolbox"
+      - "--editable=git+https://github.com/MasterOnDust/DUST.git@0.1.2#egg=dust"
+      - "--editable=git+https://github.com/MasterOnDust/flexpart_cluster.git@1.0.1#egg=fpcluster"
