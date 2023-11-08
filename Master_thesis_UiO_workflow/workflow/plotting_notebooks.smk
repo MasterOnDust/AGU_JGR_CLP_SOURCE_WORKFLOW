@@ -12,9 +12,9 @@ rule plot_ao_mo_composite:
         expand(config['intermediate_files']+'/era5.500hPa.{variable}.{season}.1979-2019.nc',
                 variable = ['u_component_of_wind', 'v_component_of_wind','GeopotHeight'],
                 season=['DJF','MAM']),
-        'results/ao/era5.1000hPa.AO_EOF.DJF.1979-2019.nc',
-        'results/eawmi/era5.single_level.EAWM_MO.DJF.1979-2019.nc',
-        'downloads/ERA5_orography.nc'
+        config['old_base']+'/results/ao/era5.1000hPa.AO_EOF.DJF.1979-2019.nc',
+        config['old_base']+'/results/eawmi/era5.single_level.EAWM_MO.DJF.1979-2019.nc',
+        config['old_base']+'/downloads/ERA5_orography.nc'
     output:
         path_500hpa='figs/winter_MO_AO_composite_850hPa.pdf',
         path_850hpa='figs/winter_MO_AO_composite_500hPa.pdf'
@@ -44,7 +44,7 @@ rule plot_circulation_clim:
 
 rule plot_emission_eof_analysis:
     input:
-        'results/model_results/intermediate_results/emission_flux.china.MAM.1999-2019.nc',
+        config['old_base']+'/results/model_results/intermediate_results/emission_flux.china.MAM.1999-2019.nc',
         data850hpa= expand(config['intermediate_files']+'/era5.850hPa.{variable}.{season}.1979-2019.nc',
                 variable = ['u_component_of_wind', 'v_component_of_wind'],
                 season=['DJF','MAM']),

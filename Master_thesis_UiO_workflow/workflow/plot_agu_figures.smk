@@ -13,10 +13,10 @@ rule plot_correlation_matrix_agu:
 
 rule plot_dust_loading_trajectories_agu:
     input:
-        trajec_files = expand('results/model_results/trajectories/dust_loading_traj_{kind}_{size}_{loc}_{sdate}-{edate}.nc',
+        trajec_files = expand(config['old_base']+'/results/model_results/trajectories/dust_loading_traj_{kind}_{size}_{loc}_{sdate}-{edate}.nc',
                          size=['2micron','20micron'],   loc=['SACOL','LINGTAI','BAODE','SHAPOTOU','LANTIAN', 'LUOCHUAN'],
               kind=['drydep','wetdep'],sdate=config['m_sdate'], edate=config['m_edate']),
-        emi_dust = 'results/model_results/intermediate_results/emission_flux.china.MAM.1999-2019.nc'
+        emi_dust = config['intermediate_results_models']+'/emission_flux.china.MAM.1999-2019.nc'
     output:
         path_map = 'figs/agu/average_dust_transport_trajectories.pdf',
         path_vertical_profile = 'figs/agu/average_dust_transport_height.pdf'
@@ -26,16 +26,16 @@ rule plot_dust_loading_trajectories_agu:
 
 rule create_deposition_histogram:
     input:
-        wetdep_2micron = expand('results/model_results/intermediate_results/timeseries/wetdep/wetdep.{loc}.2micron.Day.{year}.csv',
+        wetdep_2micron = expand(config['intermediate_results_models']+'/timeseries/wetdep/wetdep.{loc}.2micron.Day.{year}.csv',
         loc=LOCS_AGU_PAPER,
         year=[str(y) for y in range(1999,2020)], allow_missing=True),
-        wetdep_20micron = expand('results/model_results/intermediate_results/timeseries/wetdep/wetdep.{loc}.20micron.Day.{year}.csv',
+        wetdep_20micron = expand(config['intermediate_results_models']+'/timeseries/wetdep/wetdep.{loc}.20micron.Day.{year}.csv',
         loc=LOCS_AGU_PAPER,
         year=[str(y) for y in range(1999,2020)], allow_missing=True),
-        drypdep_2micron = expand('results/model_results/intermediate_results/timeseries/drydep/drydep.{loc}.2micron.Day.{year}.csv',
+        drypdep_2micron = expand(config['intermediate_results_models']+'/timeseries/drydep/drydep.{loc}.2micron.Day.{year}.csv',
         loc=LOCS_AGU_PAPER, 
         year=[str(y) for y in range(1999,2020)], allow_missing=True),
-        drydep_20micron = expand('results/model_results/intermediate_results/timeseries/drydep/drydep.{loc}.2micron.Day.{year}.csv',
+        drydep_20micron = expand(config['intermediate_results_models']+'/timeseries/drydep/drydep.{loc}.2micron.Day.{year}.csv',
         loc=LOCS_AGU_PAPER,
         year=[str(y) for y in range(1999,2020)], allow_missing=True),
 
@@ -92,7 +92,7 @@ rule plot_all_agu:
     input:
         rules.plot_ao_mo_composite.output,
         rules.plot_correlation_matrix_agu.output,
-        #rules.plot_dust_loading_trajectories_agu.output,
+        rules.plot_dust_loading_trajectories_agu.output,
         rules.create_deposition_histogram.output,
         rules.plot_source_contribution_agu.output,
         expand(rules.plot_composite_combo_500hPa_v2.output, psize=['2micron','20micron']),
