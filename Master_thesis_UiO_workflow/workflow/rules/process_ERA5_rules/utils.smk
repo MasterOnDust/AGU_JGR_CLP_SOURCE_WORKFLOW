@@ -5,7 +5,6 @@ rule setup_folder_structure:
         data_folder=config['intermediate_files'],
         figs=config['figs_path'],
         monthly_data=config['download_path'],
-        nao=config['nao_output_path'],
         ao=config['ao_output_path']
     shell:
         """

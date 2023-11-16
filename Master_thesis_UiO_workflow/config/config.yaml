@@ -3,24 +3,21 @@
 
 # Setting different global paths where the result should be stored
 # Maybe this should be removed and I'll just hard code the paths?
-old_base : "../../data/Master_thesis_UiO_workflow/Master_thesis_UiO_workflow"
-download_path: "../../data/Master_thesis_UiO_workflow/Master_thesis_UiO_workflow/downloads/downloads/monthly"
+old_base : "../../data/data"
+download_path: "../../data/datadownloads/downloads/monthly"
 figs_path: "results/figs"
-intermediate_files: "../../data/Master_thesis_UiO_workflow/Master_thesis_UiO_workflow/downloads/intermediate_results"
-nao_output_path: "../../data/Master_thesis_UiO_workflow/Master_thesis_UiO_workflow/results/nao"
-EAWMI_path: "../../data/Master_thesis_UiO_workflow/Master_thesis_UiO_workflow/results/eawmi"
-ao_output_path: "../../data/Master_thesis_UiO_workflow/Master_thesis_UiO_workflow/results/ao"
-APVI_index_outpath: "../../data/Master_thesis_UiO_workflow/Master_thesis_UiO_workflow/results/apv"
-Precipitation: "../../data/Master_thesis_UiO_workflow/Master_thesis_UiO_workflow/results/precip"
-orography_file: "../../data/Master_thesis_UiO_workflow/Master_thesis_UiO_workflow/downloads/downloads/ERA5_orography.nc"
+intermediate_files: "../../data/data/intermediate_results"
+EAWMI_path: "../../data/data/results/eawmi"
+ao_output_path: "../../data/data/results/ao"
+APVI_index_outpath: "../../data/data/results/apv"
+Precipitation: "../../data/data/results/precip"
+orography_file: "../../data/data/downloads/downloads/ERA5_orography.nc"
 
-
-flexpart_path: "/projects/NS2806K/ovewh/tracing_the_winds/flexpart/production_run"
 flexdust_path: "../../data/FLEXDUST_emission_flux/FLEXDUST1999_2019"
 source_contrib_path: "../../data/flexpart/production_run/improved_kok_flexdust_1999_2019_fixed_scaling"
-flexdust_results: "../../data/Master_thesis_UiO_workflow/Master_thesis_UiO_workflow/results/model_results/flexdust"
-intermediate_results_models: "../../data/Master_thesis_UiO_workflow/Master_thesis_UiO_workflow/results/model_results/intermediate_results"
-source_contrib_results: "../../data/Master_thesis_UiO_workflow/Master_thesis_UiO_workflow/results/model_results/source_contrib"
+flexdust_results: "../../data/data/results/model_results/flexdust"
+intermediate_results_models: "../../data/data/results/model_results/intermediate_results"
+source_contrib_results: "../../data/data/results/model_results/source_contrib"
 MERRA2_path : "../../data/MERRA2"
 # Variables name used to constrain the wildcards
 
