@@ -1,8 +1,13 @@
 # This file configures the workflow on a global scale.
 # Setting the global path variables etss
 
+
+#Toggles for turning off functionalility from recreating certain input files. 
+recreateERA5active: False
+recreateFLEXDUST: False
+recreateFLEXPART: False
 # Setting different global paths where the result should be stored
-# Maybe this should be removed and I'll just hard code the paths?
+
 old_base : "../../data/data"
 download_path: "../../data/data/downloads/monthly"
 figs_path: "results/figs"

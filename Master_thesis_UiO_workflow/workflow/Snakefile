@@ -31,21 +31,25 @@ wildcard_constraints:
     comp_type='std_anom|anom|std|comp_only',
     threshold='05-std|1-std|2-std'
 
-include: "rules/process_ERA5_rules/download.smk"
-include: "rules/process_ERA5_rules/utils.smk"
-include: "rules/process_ERA5_rules/calculate_means.smk"
-include: "rules/process_ERA5_rules/climatology_calculation.smk"
-include: "rules/process_ERA5_rules/calculate_anomalies.smk"
-include: "rules/process_ERA5_rules/download_land_surface_data.smk"
-include: "rules/process_ERA5_rules/calc_EAWMI.smk"
-include: "rules/process_ERA5_rules/calc_AO.smk"
-include: "rules/process_ERA5_rules/calc_APV_indecies.smk"
-include: 'rules/process_models_data_rules/process_emission_field.smk'
-include: 'rules/process_models_data_rules/calc_total_deposition.smk'
+if config['recreateERA5active']:
+
+    include: "rules/process_ERA5_rules/download.smk"
+    include: "rules/process_ERA5_rules/utils.smk"
+    include: "rules/process_ERA5_rules/calculate_means.smk"
+    include: "rules/process_ERA5_rules/climatology_calculation.smk"
+    include: "rules/process_ERA5_rules/calculate_anomalies.smk"
+    include: "rules/process_ERA5_rules/download_land_surface_data.smk"
+    include: "rules/process_ERA5_rules/calc_EAWMI.smk"
+    include: "rules/process_ERA5_rules/calc_AO.smk"
+    include: "rules/process_ERA5_rules/calc_APV_indecies.smk"
+    include: 'rules/process_ERA5_rules/calc_temperature_gradient.smk'
+    include: 'rules/download_orography.smk'
+if config['recreateFLEXDUST']:
+    include: 'rules/process_models_data_rules/process_emission_field.smk'
+if config['recreateFLEXPART']:
+    include: 'rules/process_models_data_rules/calc_total_deposition.smk'
 include: 'rules/create_composite.smk'
-include: 'rules/process_ERA5_rules/calc_temperature_gradient.smk'
 include: 'rules/create_timeseries_table.smk'
-include: 'rules/download_orography.smk'
 include: 'plotting_notebooks.smk'
 include: 'plot_agu_figures.smk'
 
