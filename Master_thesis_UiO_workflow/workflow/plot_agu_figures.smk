@@ -67,7 +67,7 @@ rule plot_psize_composite_combo_850hPa:
         outpath=expand('results/composites/msl_pressure_wind_850hPa/era5.wind_msl.850hPa.composite.{kind}.{psize}.{season}.{loc}.total.4_rank.{sdate}-{edate}.nc',
         kind=['drydep','total_deposition'],   loc=LOCS_AGU_PAPER,
               sdate=config['m_sdate'], edate=config['m_edate'],season=['MAM','DJF'],allow_missing=True),
-        oro = 'downloads/ERA5_orography.nc'
+        oro = config['orography_file']
     output:
         composite_facet_plot='figs/agu/combo_psize_850hPa_composite_figure_{psize}.png'
     notebook:

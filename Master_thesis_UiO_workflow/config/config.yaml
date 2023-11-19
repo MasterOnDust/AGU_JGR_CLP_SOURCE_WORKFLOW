@@ -4,14 +4,14 @@
 # Setting different global paths where the result should be stored
 # Maybe this should be removed and I'll just hard code the paths?
 old_base : "../../data/data"
-download_path: "../../data/datadownloads/downloads/monthly"
+download_path: "../../data/data/downloads/monthly"
 figs_path: "results/figs"
-intermediate_files: "../../data/data/intermediate_results"
+intermediate_files: "../../data/data/downloads/intermediate_results"
 EAWMI_path: "../../data/data/results/eawmi"
 ao_output_path: "../../data/data/results/ao"
 APVI_index_outpath: "../../data/data/results/apv"
 Precipitation: "../../data/data/results/precip"
-orography_file: "../../data/data/downloads/downloads/ERA5_orography.nc"
+orography_file: "../../data/data/downloads/ERA5_orography.nc"
 
 flexdust_path: "../../data/FLEXDUST_emission_flux/FLEXDUST1999_2019"
 source_contrib_path: "../../data/flexpart/production_run/improved_kok_flexdust_1999_2019_fixed_scaling"
