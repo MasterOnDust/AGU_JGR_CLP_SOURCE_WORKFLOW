@@ -85,7 +85,19 @@ rule plot_composite_combo_500hPa_v2:
         'notebooks/AGU_paper_figures/Deposition_500hPa_composite_v3.py.ipynb'
 
 
-
+rule plot_wetdep_height_at_arrival:
+    input:
+        trajec_files = expand(config['old_base']+'/results/model_results/trajectories/dust_loading_traj_{kind}_{size}_{loc}_{sdate}-{edate}.nc',
+                         size=['2micron','20micron'],   loc=['SACOL','LINGTAI','BAODE','SHAPOTOU','LANTIAN', 'LUOCHUAN'],
+              kind=['wetdep'],sdate=config['m_sdate'], edate=config['m_edate'])
+    params:
+        assumed_cloud_base=2500
+    
+    output:
+        facet_plot_wetdep_at_site = 'figs/agu/wetdep_height_at_arrival.pdf',
+        facet_plot_wetdep_at_site_regplot= 'figs/agu/wetdep_height_at_arrival_regplot.pdf'
+    notebook:
+        'notebooks/AGU_paper_figures/Wetdep_incloud_vs_below_cloud.py.ipynb'
 
 
 rule plot_all_agu:
