@@ -9,10 +9,10 @@ recreateFLEXPART: False
 # Setting different global paths where the result should be stored
 
 old_base : "../../data/data"
-download_path: "../../data/data/downloads/monthly"
+download_path: "../../data/data/data/downloads/monthly"
 figs_path: "results/figs"
 intermediate_files: "../../data/data/downloads/intermediate_results"
-EAWMI_path: "../../data/data/results/eawmi"
+EAWMI_path: "../../data/results/eawmi"
 ao_output_path: "../../data/data/results/ao"
 APVI_index_outpath: "../../data/data/results/apv"
 Precipitation: "../../data/data/results/precip"
