@@ -1,17 +1,17 @@
 import argparse as ap
 
-
-import numpy as np
 import cartopy.crs as ccrs
+import matplotlib as mpl
 import matplotlib.pyplot as plt
+import numpy as np
 import xarray as xr
 from cartopy.mpl.gridliner import (LATITUDE_FORMATTER, LONGITUDE_FORMATTER,
-                                   Gridliner)
-from cartopy.mpl.gridliner import LongitudeFormatter, LatitudeFormatter
-from matplotlib.ticker import ScalarFormatter,AutoMinorLocator
-from thesis_toolbox.process_era5 import read_data
+                                   Gridliner, LatitudeFormatter,
+                                   LongitudeFormatter)
 from dust.plot.maps import map_china
-import matplotlib as mpl
+from matplotlib.ticker import AutoMinorLocator, ScalarFormatter
+from thesis_toolbox.process_era5 import read_data
+
 
 def map_close_up(ax):
     ax=map_china(ax)
