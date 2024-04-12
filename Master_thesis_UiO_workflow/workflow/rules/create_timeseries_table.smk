@@ -7,7 +7,6 @@ EDATE_m = config['m_edate']
 
 rule create_timeseries_table:
     input:
-        NAO_EOF_path_djf = config['old_base']+'/results/nao/era5.single_level.NAO_EOF.DJF.'+ str(SDATE)+'-'+str(EDATE)+'.nc',
         AO_EOF_path_djf = config['old_base']+'/results/ao/era5.1000hPa.AO_EOF.DJF.'+ str(SDATE)+'-'+str(EDATE)+'.nc',
         APVI_path_djf = config['old_base']+'/results/apv/era5.500hPa.APVI_index.DJF.'+ str(SDATE)+'-'+str(EDATE)+'.nc',
         MO_path_djf = config['old_base']+'/results/eawmi/era5.single_level.EAWM_MO.DJF.'+ str(SDATE)+'-'+str(EDATE)+'.nc',
@@ -15,9 +14,7 @@ rule create_timeseries_table:
         EAWMI_path_djf = config['old_base']+'/results/eawmi/era5.single_level.U300hPa_EAWM.DJF.'+ str(SDATE)+'-'+str(EDATE)+'.nc',
         Precipitation_path_djf = expand(config['old_base']+'/results/precip/era5.single_level.total_precipitation.{location}.DJF.'+ str(SDATE)+'-'+str(EDATE)+'.csv',
                                     location=config['receptors'].keys() ,allow_missing=True),
-        NAO_station_path_djf = config['old_base']+'/results/nao/era5.single_level.NAO_station.DJF.'+ str(SDATE)+'-'+str(EDATE)+'.nc',
         Temp_gradient_djf = config['old_base']+'/results/2mt_gradient/era5.single_level.2m_temperature_gradient.East_asia.DJF.'+ str(SDATE)+'-'+str(EDATE)+'.nc',
-        NAO_EOF_path = config['old_base']+'/results/nao/era5.single_level.NAO_EOF.MAM.'+ str(SDATE)+'-'+str(EDATE)+'.nc',
         AO_EOF_path = config['old_base']+'/results/ao/era5.1000hPa.AO_EOF.MAM.'+ str(SDATE)+'-'+str(EDATE)+'.nc',
         APVI_path = config['old_base']+'/results/apv/era5.500hPa.APVI_index.MAM.'+ str(SDATE)+'-'+str(EDATE)+'.nc',
         MO_path = config['old_base']+'/results/eawmi/era5.single_level.EAWM_MO.MAM.'+ str(SDATE)+'-'+str(EDATE)+'.nc',
@@ -25,7 +22,6 @@ rule create_timeseries_table:
         EAWMI_path = config['old_base']+'/results/eawmi/era5.single_level.U300hPa_EAWM.MAM.'+ str(SDATE)+'-'+str(EDATE)+'.nc',
         Precipitation_path = expand(config['old_base']+'/results/precip/era5.single_level.total_precipitation.{location}.MAM.'+ str(SDATE)+'-'+str(EDATE)+'.csv',
                             location=['SACOL','BAODE','LANTIAN', 'LINGTAI', 'SHAPOTOU', 'LUOCHUAN'] ,allow_missing=True),
-        NAO_station_path = config['old_base']+'/results/nao/era5.single_level.NAO_station.MAM.'+ str(SDATE)+'-'+str(EDATE)+'.nc',
         Temp_gradient = config['old_base']+'/results/2mt_gradient/era5.single_level.2m_temperature_gradient.East_asia.MAM.'+ str(SDATE)+'-'+str(EDATE)+'.nc',
         emission_data = expand(config['flexdust_results']+'/emission_flux.time_series.{region}.MAM.'+ str(SDATE_m)+'-'+str(EDATE_m)+'.nc',
                         region=['taklamakan','mongolia','north_west', 'total','quaidam_basin','central_asia','jungger_basin'],allow_missing=True),
@@ -88,23 +84,19 @@ rule create_timeseries_table:
             
             return dsets
         # Read MAM indices 
-        NAO_EOF_MAM = read_data(input.NAO_EOF_path, config['m_sdate'], config['m_edate'])
         AO_EOF_MAM = read_data(input.AO_EOF_path, config['m_sdate'], config['m_edate'])
         APVI_MAM = read_data(input.APVI_path, config['m_sdate'], config['m_edate'])
         MO_MAM = read_data(input.MO_path, config['m_sdate'], config['m_edate'])
         SHI_MAM = read_data(input.SHI_path, config['m_sdate'], config['m_edate'])
-        NAO_station_MAM = read_data(input.NAO_station_path, config['m_sdate'], config['m_edate'])
         Temp_gradient_MAM = read_data(input.Temp_gradient, config['m_sdate'], config['m_edate'])
         temp_gradient_anomalies_MAM = Temp_gradient_MAM.anomalies.sel(latitude_bins=slice(40,50)).mean(dim='latitude_bins')
         EAWMI_MAM = read_data(input.EAWMI_path, config['m_sdate'], config['m_edate'])
 
         #Read DJF indicies
-        NAO_EOF_DJF = read_data(input.NAO_EOF_path_djf, config['m_sdate'], config['m_edate'])
         AO_EOF_DJF = read_data(input.AO_EOF_path_djf, config['m_sdate'], config['m_edate'])
         APVI_DJF = read_data(input.APVI_path_djf, config['m_sdate'], config['m_edate'])
         MO_DJF = read_data(input.MO_path_djf, config['m_sdate'], config['m_edate'])
         SHI_DJF = read_data(input.SHI_path_djf, config['m_sdate'], config['m_edate'])
-        NAO_station_DJF = read_data(input.NAO_station_path_djf, config['m_sdate'], config['m_edate'])
         Temp_gradient_DJF = read_data(input.Temp_gradient_djf, config['m_sdate'], config['m_edate'])
         temp_gradient_anomalies_DJF = Temp_gradient_DJF.anomalies.sel(latitude_bins=slice(40,50)).mean(dim='latitude_bins')
         EAWMI_DJF = read_data(input.EAWMI_path_djf, config['m_sdate'], config['m_edate'])
@@ -114,22 +106,18 @@ rule create_timeseries_table:
 
         
         indicies = {
-            'NAO EOF MAM' : NAO_EOF_MAM.NAO_EOF.sel(mode=0).values,
             'AO EOF MAM' : AO_EOF_MAM.AO_EOF.sel(mode=0).values,
             'APVI MAM' : APVI_MAM.APVI.values,
             'MO MAM' : MO_MAM.MO.values,
             'SHI MAM' : SHI_MAM.SHI.values,
             'EAWMI MAM' : EAWMI_MAM.EAWMI.values,
             'Temp gradient anomalies MAM' : temp_gradient_anomalies_MAM.values,
-            'NAO station MAM' : NAO_station_MAM.NAO,
-            'NAO EOF DJF' : NAO_EOF_DJF.NAO_EOF.sel(mode=0).values,
             'AO EOF DJF' : AO_EOF_DJF.AO_EOF.sel(mode=0).values,
             'APVI DJF' : APVI_DJF.APVI.values,
             'MO DJF' : MO_DJF.MO.values,
             'SHI DJF' : SHI_DJF.SHI.values,
             'EAWMI DJF' : EAWMI_DJF.EAWMI.values,
             'Temp gradient anomalies_DJF' : temp_gradient_anomalies_DJF.values,
-            'NAO station DJF' : NAO_station_DJF.NAO
             
         }
         df_indices = pd.DataFrame(indicies, index=AO_EOF_DJF.time.values)

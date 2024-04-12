@@ -37,9 +37,9 @@ rule sum_spring_deposition:
         
 rule source_contribution_source_region_timeseries:
     input:
-        depo_data='results/model_results/{kind}/{kind}.{location}.{psize}.MAM.{sdate}-{edate}.nc'
+        depo_data=config['old_base']+'/results/model_results/{kind}/{kind}.{location}.{psize}.MAM.{sdate}-{edate}.nc'
     output:
-        outpath='results/model_results/time_series/{kind}/{kind}.{location}.{region}.{psize}.MAM.{sdate}-{edate}.nc'
+        outpath=config['old_base']+'results/model_results/time_series/{kind}/{kind}.{location}.{region}.{psize}.MAM.{sdate}-{edate}.nc'
     wildcard_constraints:
         region='|'.join(config['source_regions'].keys()) + '|total'
         

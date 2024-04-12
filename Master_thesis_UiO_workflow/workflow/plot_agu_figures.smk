@@ -50,7 +50,7 @@ rule create_deposition_histogram:
 
 rule plot_source_contribution_agu:
     input:
-        expand('results/model_results/time_series/{kind}/{kind}.{loc}.total.{psize}.MAM.{sdate}-{edate}.nc',
+        expand(config['old_base']+'/results/model_results/time_series/{kind}/{kind}.{loc}.total.{psize}.MAM.{sdate}-{edate}.nc',
             loc=LOCS_AGU_PAPER,
             kind=['drydep','wetdep'],sdate=config['m_sdate'], edate=config['m_edate'],
             psize=['2micron','20micron'])
