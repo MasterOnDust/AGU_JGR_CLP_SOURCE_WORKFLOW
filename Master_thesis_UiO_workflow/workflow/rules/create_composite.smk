@@ -6,7 +6,7 @@ rule windspeed_geopot_wind_composite:
         u_wind=config['intermediate_files'] + '/era5.{plevel}.u_component_of_wind.{season}.'+ str(SDATE)+'-'+str(EDATE)+'.nc',
         v_wind=config['intermediate_files'] + '/era5.{plevel}.v_component_of_wind.{season}.'+ str(SDATE)+'-'+str(EDATE)+'.nc',
         geopot=config['intermediate_files'] + '/era5.{plevel}.GeopotHeight.{season}.'+ str(SDATE)+'-'+str(EDATE)+'.nc',
-        timeseries=config['old_base']+'results/model_results/time_series/{kind}/{kind}.{location}.{region}.{psize}.MAM.{sdate}-{edate}.nc'
+        timeseries=config['old_base']+'/results/model_results/time_series/{kind}/{kind}.{location}.{region}.{psize}.MAM.{sdate}-{edate}.nc'
     output:
         outpath='results/composites/windspeed_geopot_{plevel}/era5.wind_geopot.{plevel}.composite.{kind}.{psize}.{season}.{location}.{region}.{c}_{criterion}.{sdate}-{edate}.nc'
     params:
