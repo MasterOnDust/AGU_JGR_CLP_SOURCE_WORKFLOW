@@ -35,7 +35,7 @@ rule create_deposition_histogram:
         drypdep_2micron = expand(config['intermediate_results_models']+'/timeseries/drydep/drydep.{loc}.2micron.Day.{year}.csv',
         loc=LOCS_AGU_PAPER, 
         year=[str(y) for y in range(1999,2020)], allow_missing=True),
-        drydep_20micron = expand(config['intermediate_results_models']+'/timeseries/drydep/drydep.{loc}.2micron.Day.{year}.csv',
+        drydep_20micron = expand(config['intermediate_results_models']+'/timeseries/drydep/drydep.{loc}.20micron.Day.{year}.csv',
         loc=LOCS_AGU_PAPER,
         year=[str(y) for y in range(1999,2020)], allow_missing=True),
 
@@ -95,7 +95,6 @@ rule plot_wetdep_height_at_arrival:
     
     output:
         facet_plot_wetdep_at_site = 'figs/agu/wetdep_height_at_arrival.pdf',
-        facet_plot_wetdep_at_site_regplot= 'figs/agu/wetdep_height_at_arrival_regplot.pdf'
     notebook:
         'notebooks/AGU_paper_figures/Wetdep_incloud_vs_below_cloud.py.ipynb'
 
