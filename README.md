@@ -8,6 +8,16 @@ The paths used in the workflow is configure in the `Master_thesis_UiO_workflow/c
 The computing enviroment can be installed using conda there is also a docker enviroment which can be used https://hub.docker.com/repository/docker/ovewh/thesisdocker/general.
 The easiest would be to use the docker container, data files are available in this zenodo repository. The workflow can configured to work on any computing system you the same thesisdocker container if the path are updated. 
 
+## Setting up computing evniroment. 
+
+To pull and isntall the docker image:
+
+```
+docker pull thesisdocker:latest
+```
+
+## Running the workflow
+
 To run the workflow simply within the thesis docker container enviroment or on nird toolkit, simply activite the enviroment by `source activate dust`. Then run the workflow you need to be in the `AGU_JGR_CLP_SOURCE_WORKFLOW/Master_thesis_UiO_workflow` directory, the first step of runnning the workflow is done by first checking if all the files are there:
 
 ```shell
