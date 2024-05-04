@@ -16,7 +16,7 @@ To pull the docker image:
 docker pull thesisdocker:latest
 ```
 
-Download the data from the (Zenodo repository)[https://zenodo.org/records/10114436].
+Download the data from the [Zenodo repository](https://zenodo.org/records/10114436).
 
 Create a volume for the home directory:
 
