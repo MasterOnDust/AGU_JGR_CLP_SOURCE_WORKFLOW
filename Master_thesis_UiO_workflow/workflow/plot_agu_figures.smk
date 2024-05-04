@@ -98,6 +98,35 @@ rule plot_wetdep_height_at_arrival:
     notebook:
         'notebooks/AGU_paper_figures/Wetdep_incloud_vs_below_cloud.py.ipynb'
 
+rule plot_spring_footprint:
+    input:
+        footprint_files_wetdep2m = expand(config['old_base']+'/results/model_results/intermediate_results/wetdep/wetdep.{loc}.2micron.monthly.1999-2019.nc',
+                                    loc=['SACOL','LINGTAI','BAODE','SHAPOTOU','LANTIAN', 'LUOCHUAN']),
+        footprint_files_drydep2m = expand(config['old_base']+'/results/model_results/intermediate_results/drydep/drydep.{loc}.2micron.monthly.1999-2019.nc',
+                                    loc=['SACOL','LINGTAI','BAODE','SHAPOTOU','LANTIAN', 'LUOCHUAN']),
+        footprint_files_wetdep20m = expand(config['old_base']+'/results/model_results/intermediate_results/wetdep/wetdep.{loc}.20micron.monthly.1999-2019.nc',
+                                    loc=['SACOL','LINGTAI','BAODE','SHAPOTOU','LANTIAN', 'LUOCHUAN']),
+        footprint_files_drydep20m = expand(config['old_base']+'/results/model_results/intermediate_results/drydep/drydep.{loc}.20micron.monthly.1999-2019.nc',
+                                    loc=['SACOL','LINGTAI','BAODE','SHAPOTOU','LANTIAN', 'LUOCHUAN']),
+        
+        trajec_files_wetdep2m = expand(config['old_base']+'/results/model_results/trajectories/dust_loading_traj_wetdep_2micron_{loc}_{sdate}-{edate}.nc',
+                                    loc=['SACOL','LINGTAI','BAODE','SHAPOTOU','LANTIAN', 'LUOCHUAN'],
+                                      sdate=config['m_sdate'], edate=config['m_edate']),
+        trajec_files_drydep2m = expand(config['old_base']+'/results/model_results/trajectories/dust_loading_traj_drydep_2micron_{loc}_{sdate}-{edate}.nc',
+                                    loc=['SACOL','LINGTAI','BAODE','SHAPOTOU','LANTIAN', 'LUOCHUAN'],
+                                      sdate=config['m_sdate'], edate=config['m_edate']),
+
+        trajec_files_wetdep20m = expand(config['old_base']+'/results/model_results/trajectories/dust_loading_traj_wetdep_20micron_{loc}_{sdate}-{edate}.nc',
+                                    loc=['SACOL','LINGTAI','BAODE','SHAPOTOU','LANTIAN', 'LUOCHUAN'],
+                                      sdate=config['m_sdate'], edate=config['m_edate'],allow_missing=True),
+        trajec_files_drydep20m = expand(config['old_base']+'/results/model_results/trajectories/dust_loading_traj_drydep_20micron_{loc}_{sdate}-{edate}.nc',
+                                    loc=['SACOL','LINGTAI','BAODE','SHAPOTOU','LANTIAN', 'LUOCHUAN'],
+                                      sdate=config['m_sdate'], edate=config['m_edate'],allow_missing=True),
+
+    output:
+            facet_plot_footprint = 'figs/agu/footprint_spring.png'
+    notebook:
+            'notebooks/AGU_paper_figures/footprint_plotting.py.ipynb'
 
 rule plot_all_agu:
     input:
